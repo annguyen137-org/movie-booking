@@ -1,0 +1,4 @@
+.card:hover .card-img img {
+    transform: scale(1.2);
+}
+
