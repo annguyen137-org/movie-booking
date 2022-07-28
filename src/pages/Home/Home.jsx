@@ -10,6 +10,7 @@ import { getMovieBanner } from "redux/slices/moviesSlice";
 import PageLoading from "components/Loading/PageLoading";
 
 const Home = () => {
+  window.scrollTo(0, 0);
   const dispatch = useDispatch();
 
   const [showLoading, setShowLoading] = useState(false);

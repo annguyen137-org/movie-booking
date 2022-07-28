@@ -1,10 +1,13 @@
 import React from "react";
 import { Tabs } from "antd";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export const theatersRef = React.createRef();
 
 const TheaterTabs = () => {
+  const navigate = useNavigate();
+
   const { theatersBrand } = useSelector((state) => {
     return state.theaters;
   });
@@ -70,8 +73,11 @@ const TheaterTabs = () => {
                                       {film.lstLichChieuTheoPhim.map((showtime) => {
                                         return (
                                           <div
-                                            className="bg-slate-300 m-2 py-2 rounded-md transition-colors hover:bg-orange-600"
+                                            className="bg-slate-300 m-2 py-2 rounded-md transition-colors hover:bg-orange-600 hover:cursor-pointer"
                                             key={showtime.maLichChieu}
+                                            onClick={() => {
+                                              navigate(`/purchase/${showtime.maLichChieu}`);
+                                            }}
                                           >
                                             <span className="bg-orange-600 font-bold p-1 rounded-sm mb-1">{showtime.tenRap}</span>
 
