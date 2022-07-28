@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, NavLink, useNavigate } from "react-router-dom";
-import { Button, Input, Form, Checkbox, Statistic } from "antd";
+import { Button, Input, Form, Checkbox, notification } from "antd";
 import { register } from "redux/slices/authSlice";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm, useController } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { resetRegisterStatus } from "redux/slices/authSlice";
 
 const Register = () => {
-  window.scrollTo(0, 0);
+  // window.scrollTo(0, 0);
+  const [disableButton, setDisableButton] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,12 +35,12 @@ const Register = () => {
     email: yup.string().email("Email không đúng định dạng").required("Email không được trống!").default(""),
     soDt: yup
       .string()
-      .required("Số DT không được trống")
+      .required("Số DT không được trống!")
       .matches(/^[0-9]+$/, "Số DT không đúng định dạng")
       .default(""),
     hoTen: yup
       .string()
-      .required("Họ tên không được trống")
+      .required("Họ tên không được trống!")
       .matches(
         "^[a-zA-Z_ÀÁÂÃÈÉÊẾÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶ" +
           "ẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợ" +
@@ -60,21 +62,41 @@ const Register = () => {
     reset,
     getFieldState,
   } = useForm({
-    mode: "onChange",
-    reValidateMode: "onChange",
+    mode: "onBlur",
     resolver: yupResolver(registationSchema),
   });
 
   const onSubmit = (values) => {
     dispatch(register(values));
-    if (isValid) {
-      reset();
+    setDisableButton(false);
+  };
+
+  const onError = () => {
+    setDisableButton(true);
+
+    if (errors) {
+      notification["error"]({ message: "Trường thông tin rỗng", description: "Vui lòng kiểm tra và nhập lại các trường thông tin" });
+    }
+  };
+
+  useEffect(() => {
+    if (isRegisterSuccess) {
+      notification["success"]({ message: "Đăng ký thành công", description: "Chuyển về trang đăng nhập sau 3s" });
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
+      reset({ keepDefaultValues: true });
+
+      dispatch(resetRegisterStatus());
+    }
+    if (error) {
+      notification["error"]({ message: "Đăng ký thất bại", description: error });
     }
 
-    setTimeout(() => {
-      navigate("/login");
-    }, 3000);
-  };
+    if (isValid) {
+      setDisableButton(false);
+    }
+  }, [isRegisterSuccess, error, isSubmitSuccessful, isValid]);
 
   if (Object.keys(currentUser).length) {
     return <Navigate to="/" replace />;
@@ -88,18 +110,18 @@ const Register = () => {
             <h1 className="my-3 text-4xl font-bold">Đăng ký</h1>
             <p className="text-sm dark:text-gray-400">...</p>
           </div>
-          <Form autoComplete="off" onFinish={handleSubmit(onSubmit)} layout="vertical">
+          <Form autoComplete="off" onFinish={handleSubmit(onSubmit, onError)} layout="vertical">
             <Form.Item
               label="Tài khoản"
               required
               hasFeedback
-              validateStatus={errors.taiKhoan ? "error" : getFieldState("taiKhoan").invalid ? "success" : ""}
+              validateStatus={errors.taiKhoan ? "error" : ""}
               help={errors.taiKhoan?.message}
             >
               <Controller
                 control={control}
                 name="taiKhoan"
-                render={({ field }) => <Input {...field} className="w-full px-3 py-2 border rounded-md" placeholder="Enter Username" />}
+                render={({ field }) => <Input {...field} className="w-full px-3 py-2 border rounded-md" placeholder="Nhập tài khoản" />}
               />
             </Form.Item>
             <Form.Item label="Mật khẩu" required hasFeedback validateStatus={errors.matKhau ? "error" : ""} help={errors.matKhau?.message}>
@@ -107,7 +129,7 @@ const Register = () => {
                 control={control}
                 name="matKhau"
                 render={({ field }) => (
-                  <Input.Password {...field} className="w-full px-3 py-2 border rounded-md" placeholder="Enter Password" />
+                  <Input.Password {...field} className="w-full px-3 py-2 border rounded-md" placeholder="Nhập mật khẩu" />
                 )}
               />
             </Form.Item>
@@ -122,16 +144,29 @@ const Register = () => {
                 control={control}
                 name="confirmPassword"
                 render={({ field }) => (
-                  <Input.Password className="w-full px-3 py-2 border rounded-md" placeholder="Enter Password" {...field} />
+                  <Input.Password className="w-full px-3 py-2 border rounded-md" placeholder="Nhập lại password" {...field} />
                 )}
               />
             </Form.Item>
-            <Form.Item label="Email" required hasFeedback validateStatus={errors.email ? "error" : ""} help={errors.email?.message}>
+            <Form.Item
+              label="Email"
+              required
+              hasFeedback
+              validateStatus={errors.email ?? error ? "error" : ""}
+              help={errors.email?.message ?? error}
+            >
               <Controller
                 control={control}
                 name="email"
                 render={({ field }) => (
-                  <Input autoComplete="email" className="w-full px-3 py-2 border rounded-md" placeholder="Enter Password" {...field} />
+                  <Input
+                    onFocus={() => {
+                      dispatch(resetRegisterStatus());
+                    }}
+                    className="w-full px-3 py-2 border rounded-md"
+                    placeholder="Nhập Email"
+                    {...field}
+                  />
                 )}
               />
             </Form.Item>
@@ -139,22 +174,22 @@ const Register = () => {
               <Controller
                 control={control}
                 name="soDt"
-                render={({ field }) => <Input className="w-full px-3 py-2 border rounded-md" placeholder="Enter Password" {...field} />}
+                render={({ field }) => <Input className="w-full px-3 py-2 border rounded-md" placeholder="Số ĐT" {...field} />}
               />
             </Form.Item>
             <Form.Item label="Họ Tên" required hasFeedback validateStatus={errors.hoTen ? "error" : ""} help={errors.hoTen?.message}>
               <Controller
                 control={control}
                 name="hoTen"
-                render={({ field }) => <Input className="w-full px-3 py-2 border rounded-md" placeholder="Enter Password" {...field} />}
+                render={({ field }) => <Input className="w-full px-3 py-2 border rounded-md" placeholder="Họ tên" {...field} />}
               />
             </Form.Item>
             <Form.Item required hasFeedback>
               <Controller
                 control={control}
                 name="acceptTerms"
-                render={({ field: { name, onChange, ref } }) => (
-                  <Checkbox name={name} onChange={onChange} ref={ref} className="mt-3">
+                render={({ field: { name, onChange, ref, value } }) => (
+                  <Checkbox name={name} onChange={(e) => onChange(e.target.checked)} checked={value} ref={ref} className="mt-3">
                     <p className={errors.acceptTerms && "text-red-500"}>Chấp nhận các điều khoản</p>
                   </Checkbox>
                 )}
@@ -165,21 +200,10 @@ const Register = () => {
                 <div className="w-10 h-10 border-4 border-dashed rounded-full animate-spin dark:border-orange-600"></div>
               </div>
             )}
-            {isRegisterSuccess && isSubmitSuccessful && (
-              <p className="text-blue-400">
-                Đăng ký thành công! Tự động chuyển sang trang đăng nhập sau{" "}
-                {
-                  <span>
-                    <Statistic.Countdown style={{ display: "inline-block", padding: "0 5px" }} format="ss" value={Date.now() + 1000 * 5} />
-                  </span>
-                }
-                s
-              </p>
-            )}
 
             <div className="pt-5">
               <Button
-                disabled={!isValid}
+                disabled={disableButton}
                 htmlType="submit"
                 className="w-full px-8 flex justify-center items-center py-6 font-semibold rounded-md bg-orange-600 text-white transition-colors border-orange-600 hover:bg-orange-700"
               >

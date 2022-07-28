@@ -1,15 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import PageLoading from "components/Loading/PageLoading";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
-import { Tabs } from "antd";
+import { Button, Tabs, Collapse, Rate } from "antd";
 import { getMovieDetail } from "redux/slices/moviesSlice";
 
 const MovieDetail = () => {
   window.scrollTo(0, 0);
+  const showTimesRef = useRef();
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { movieId } = useParams();
 
   const { movieDetail, isDetailLoading, error } = useSelector((state) => {
@@ -26,21 +28,57 @@ const MovieDetail = () => {
 
   return (
     <div className="movie-detail bg-slate-300">
-      <div className="container mx-auto h-full w-full text-center px-5 py-10 md:px-10 lg:px-20 2xl:px-40 grow">
+      <div className="container mx-auto h-full w-full text-center px-5 lg:py-10 md:px-10 lg:px-20 2xl:px-40 grow">
         <div className="flex flex-col md:flex-row w-full h-full">
-          <div className="w-1/3 p-5">
-            <img src={movieDetail.hinhAnh} className="w-60" alt="" />
+          <div className="md:w-1/2 lg:w-2/5 h-96 p-5 relative">
+            <img src={movieDetail.hinhAnh} className="w-full h-full" alt={movieDetail.tenPhim} />
+            {movieDetail.hot && <span className="text-white bg-red-600 text-sm mx-2 p-1 absolute top-5 left-5 animate-bounce">HOT</span>}
           </div>
 
-          <div className="w-2/3 text-left p-5">
-            <h1 className="text-3xl">{movieDetail.tenPhim}</h1>
-            <p>{movieDetail.moTa}</p>
+          <div className="md:w-1/2 lg:w-3/5 text-left p-5">
+            <p className="lg:text-4xl font-extrabold space-x-2">{movieDetail.tenPhim}</p>
+            <p className="lg:text-lg">
+              Ngày khởi chiếu:
+              <span className="p-1 rounded-md bg-orange-600 font-bold">
+                {movieDetail.ngayKhoiChieu && movieDetail.ngayKhoiChieu.split("T")[0].split("-").reverse().join("-")}
+              </span>
+            </p>
+            <div className="lg:mb-10">
+              {window.innerWidth >= 768 ? (
+                <p>{movieDetail.moTa}</p>
+              ) : (
+                <Collapse ghost>
+                  <Collapse.Panel header="Xem chi tiết">
+                    <p>{movieDetail.moTa}</p>
+                  </Collapse.Panel>
+                </Collapse>
+              )}
+            </div>
+            <div className="hidden md:flex justify-between items-center">
+              <div>
+                <Button
+                  className="rounded-md bg-orange-600 font-semibold focus:text-black hover:text-black hover:border-orange-600 hover:scale-110"
+                  size="large"
+                  onClick={() => showTimesRef.current.scrollIntoView({ behavior: "smooth", block: "center" })}
+                >
+                  Mua vé ngay
+                </Button>
+              </div>
+              <div>
+                <p className="text-lg font-bold m-0">Đánh giá: </p>
+                <Rate style={{ fontSize: "30px" }} disabled value={movieDetail.danhGia / 2}></Rate>
+              </div>
+            </div>
           </div>
         </div>
-        <div>
+        <div ref={showTimesRef}>
           <Tabs
-            tabPosition="left"
-            tabBarStyle={{ height: "500px", overflow: "hidden", borderRight: "1px solid rgb(203 213 225)" }}
+            tabPosition={window.innerWidth >= 768 ? "left" : "top"}
+            tabBarStyle={
+              window.innerWidth >= 768
+                ? { height: "500px", overflow: "hidden", borderRight: "1px solid rgb(203 213 225)" }
+                : { padding: "10px" }
+            }
             className="bg-white rounded-sm border border-slate-400"
           >
             {(movieDetail.heThongRapChieu ?? []).map((brand) => {
@@ -64,16 +102,16 @@ const MovieDetail = () => {
                                 <div
                                   key={showtime.maLichChieu}
                                   className="mb-3 mx-2 p-1 bg-slate-300 rounded-md hover:bg-orange-500 hover:cursor-pointer"
+                                  onClick={() => {
+                                    navigate(`/purchase/${showtime.maLichChieu}`);
+                                  }}
                                 >
                                   <p className="m-0">
-                                    Ngày:{" "}
                                     <span className="font-bold">
                                       {[...showtime.ngayChieuGioChieu.split("T")[0].split("-")].reverse().join("-")}
                                     </span>
                                   </p>
-                                  <p className="m-0">
-                                    Giờ: <span className="font-bold">{showtime.ngayChieuGioChieu.split("T")[1].slice(0, 5)}</span>
-                                  </p>
+                                  <p className="m-0 font-bold text-green-700">{showtime.ngayChieuGioChieu.split("T")[1].slice(0, 5)}</p>
                                 </div>
                               );
                             })}

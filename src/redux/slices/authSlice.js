@@ -56,6 +56,9 @@ const authSlice = createSlice({
       sessionStorage.removeItem("user");
       return { ...state, isLoggedIn: false, currentUser: {} };
     },
+    resetRegisterStatus: (state) => {
+      return { ...state, isRegisterSuccess: false, error: "" };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(login.pending, (state, action) => {
@@ -79,6 +82,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, resetRegisterStatus } = authSlice.actions;
 
 export default authSlice.reducer;
