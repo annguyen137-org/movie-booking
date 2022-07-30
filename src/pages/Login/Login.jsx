@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Input, Form, Checkbox } from "antd";
-import { NavLink, Navigate } from "react-router-dom";
+import { NavLink, Navigate, useLocation } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -36,9 +36,11 @@ const Login = () => {
     distpach(login(values));
   };
 
+  const location = useLocation();
+
   if (Object.keys(currentUser).length) {
     // Redirect user về trang Home
-    return <Navigate to="/" replace />;
+    return <Navigate to={location.state?.from ?? "/"} replace />;
   }
 
   return (

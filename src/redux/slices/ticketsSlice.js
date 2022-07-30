@@ -3,11 +3,11 @@ import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 
 const initialState = {
   selectedSeats: [],
-  confirmTicket: {},
   isConfirmLoading: false,
+  // bookedTickets: [],
   bookedSuccess: "",
   ticketsData: {},
-  isLoading: false,
+  isPageLoading: false,
   error: "",
 };
 
@@ -23,17 +23,11 @@ export const ticketsByShowtime = createAsyncThunk("tickets/ticketsByShowtime", a
 export const bookSelectedTickets = createAsyncThunk("ticket/bookSelectedTickets", async (showtimeId, { dispatch, getState }) => {
   try {
     const { selectedSeats } = getState().tickets;
-    let { confirmTicket } = getState().tickets;
-    confirmTicket = { ...selectedSeats };
-
     let filter = selectedSeats.map(({ tenGhe, giaVe, maGhe, isSelected }) => {
       return { maGhe, giaVe };
     });
-
     const data = await ticketsAPI.sendBookedTickets({ maLichChieu: showtimeId, danhSachVe: [...filter] });
 
-    dispatch(ticketsByShowtime(showtimeId));
-    dispatch(resetTickets(showtimeId));
     return data;
   } catch (error) {
     throw error;
@@ -60,25 +54,27 @@ const ticketsSlice = createSlice({
         };
       }
     },
-    resetTickets: (state, action) => {
+    resetTicketsReducer: (state) => {
       return {
         ...state,
-        confirmTicket: { showtimeId: Number(action.payload), list: [...state.selectedSeats] },
         selectedSeats: [],
-        error: "",
         isConfirmLoading: false,
+        bookedSuccess: "",
+        ticketsData: {},
+        isPageLoading: false,
+        error: "",
       };
     },
   },
   extraReducers: (builder) => {
     builder.addCase(ticketsByShowtime.pending, (state, action) => {
-      return { ...state, isLoading: true };
+      return { ...state, isPageLoading: true };
     });
     builder.addCase(ticketsByShowtime.fulfilled, (state, action) => {
-      return { ...state, isLoading: false, ticketsData: action.payload };
+      return { ...state, isPageLoading: false, ticketsData: action.payload };
     });
     builder.addCase(ticketsByShowtime.rejected, (state, action) => {
-      return { ...state, isLoading: false, error: action.error.message };
+      return { ...state, isPageLoading: false, error: action.error.message };
     });
     //
     builder.addCase(bookSelectedTickets.pending, (state, action) => {
@@ -93,6 +89,6 @@ const ticketsSlice = createSlice({
   },
 });
 
-export const { selectSeat, resetTickets } = ticketsSlice.actions;
+export const { selectSeat, resetTicketsReducer } = ticketsSlice.actions;
 
 export default ticketsSlice.reducer;
