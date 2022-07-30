@@ -7,6 +7,7 @@ import PageNotFound from "pages/PageNotFound/PageNotFound";
 import Register from "pages/Register/Register";
 import HomeTemplate from "template/HomeTemplate/HomeTemplate";
 import Purchase from "pages/Purchase/Purchase";
+import PurchaseTemplate from "template/PurchaseTemplate/PurchaseTemplate";
 
 function App() {
   return (
@@ -22,8 +23,8 @@ function App() {
 
           <Route path="*" element={<PageNotFound />} />
         </Route>
-        <Route path="/purchase">
-          <Route path=":showtimeId" element={<Purchase />} />
+        <Route path="/purchase" element={<PurchaseTemplate />}>
+          <Route path=":showtimeId" index element={<Purchase />} />
         </Route>
       </Routes>
     </>
