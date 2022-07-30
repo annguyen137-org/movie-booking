@@ -8,6 +8,8 @@ import Register from "pages/Register/Register";
 import HomeTemplate from "template/HomeTemplate/HomeTemplate";
 import Purchase from "pages/Purchase/Purchase";
 import PurchaseTemplate from "template/PurchaseTemplate/PurchaseTemplate";
+import SuccessConfirm from "pages/SuccessConfirm/SuccessConfirm";
+import ProtectedRoute from "route/ProtectedRoute";
 
 function App() {
   return (
@@ -19,12 +21,16 @@ function App() {
           <Route path="/detail/:movieId" element={<MovieDetail />} />
 
           <Route path="/login" element={<Login />} />
+
           <Route path="/register" element={<Register />} />
 
           <Route path="*" element={<PageNotFound />} />
         </Route>
         <Route path="/purchase" element={<PurchaseTemplate />}>
           <Route path=":showtimeId" index element={<Purchase />} />
+          <Route path=":showtimeId/success" element={<ProtectedRoute />}>
+            <Route index element={<SuccessConfirm />} />
+          </Route>
         </Route>
       </Routes>
     </>

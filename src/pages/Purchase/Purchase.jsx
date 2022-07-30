@@ -1,29 +1,29 @@
 import PageLoading from "components/Loading/PageLoading";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Navigate, NavLink, useParams } from "react-router-dom";
+import { Link, Navigate, useParams, useLocation, useNavigate } from "react-router-dom";
 import SeatItem from "./SeatItem";
+import { currencyVNDFormat } from "utils/currencyFormat";
 
-import { resetTickets, ticketsByShowtime, bookSelectedTickets } from "redux/slices/ticketsSlice";
+import { resetTicketsReducer, ticketsByShowtime, bookSelectedTickets } from "redux/slices/ticketsSlice";
 import { Button, notification } from "antd";
 import PopupModal from "components/Modal/PopupModal";
-import useModalHook from "components/Modal/useModalHook";
+import useModalHook from "utils/useModalHook";
 
 const Purchase = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  let location = useLocation();
+
   const { showtimeId } = useParams();
 
   const { visible, showModal, closeModal } = useModalHook();
 
-  const currencyFormat = new Intl.NumberFormat("vn-VN");
-
-  const { ticketsData, selectedSeats, isLoading, bookedSuccess, error } = useSelector((state) => {
+  const { ticketsData, selectedSeats, isPageLoading, isConfirmLoading, bookedSuccess, error } = useSelector((state) => {
     return state.tickets;
   });
 
-  const { currentUser } = useSelector((state) => {
-    return state.auth;
-  });
+  const { currentUser } = useSelector((state) => state.auth);
 
   let total = selectedSeats?.reduce((total, seat, index) => {
     return total + seat.giaVe;
@@ -41,17 +41,16 @@ const Purchase = () => {
     dispatch(ticketsByShowtime(showtimeId));
   }, []);
 
-  // useEffect(() => {
-  //   dispatch(resetTickets());
-  // }, [showtimeId]);
-
   useEffect(() => {
     if (bookedSuccess) {
-      notification["success"]({ message: "Đặt vé thành công", description: "Sang trang chi tiết vé đã đặt" });
+      notification["success"]({ message: "Đặt vé thành công" });
+      navigate(`/purchase/${showtimeId}/success`, {
+        state: { from: location.pathname, successTickets: { ...ticketsData.thongTinPhim, selectedSeats: selectedSeats } },
+      });
     }
   }, [bookedSuccess]);
 
-  if (isLoading) {
+  if (isPageLoading) {
     return <PageLoading />;
   }
   return (
@@ -88,7 +87,7 @@ const Purchase = () => {
           <div className="text-center border border-slate-400 shadow-lg bg-white px-2">
             <p className="text-xl border-b font-bold">Thông tin vé</p>
             <p className="text-2xl text-green-500 font-extrabold bg-orange-200 rounded-md">
-              {total && currencyFormat.format(total)}
+              {total && currencyVNDFormat.format(total)}
               <span className="mx-2 text-xl">VND</span>
             </p>
             <div className="flex flex-col justify-start text-left">
@@ -125,7 +124,8 @@ const Purchase = () => {
               </div>
               <div className="my-3">
                 <Button
-                  disabled={!selectedSeats.length}
+                  loading={isConfirmLoading}
+                  disabled={!selectedSeats.length || isConfirmLoading}
                   onClick={handleSubmit}
                   size="large"
                   className="bg-orange-600 w-full round-md text-black hover:text-black font-bold border-orange-600 hover:border-orange-500 hover:bg-orange-500 hover:scale-y-125"
@@ -145,7 +145,7 @@ const Purchase = () => {
             <p>Đăng nhập tài khoản để mua vé. Bạn có muốn đăng nhập không</p>
             <div className="flex justify-center">
               <div className="mx-5">
-                <Link to="/login">
+                <Link to={"/login"} state={{ from: location }}>
                   <Button type="primary" size="large" className="w-32">
                     Đăng nhập
                   </Button>
