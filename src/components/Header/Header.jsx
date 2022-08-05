@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { Button, Layout } from "antd";
-import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Navigate, NavLink, useNavigate } from "react-router-dom";
+import { Button, Layout, Dropdown, Space, Menu } from "antd";
+import { UserOutlined, LogoutOutlined, RightSquareOutlined } from "@ant-design/icons";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 import { moviesRef } from "../../pages/Home/MovieShowing/MovieShowing";
 import { theatersRef } from "../../pages/Home/TheaterTabs/TheaterTabs";
@@ -25,7 +25,7 @@ const Header = () => {
             window.scrollTo({ behavior: "smooth", top: 0 });
           }}
         >
-          <img src="icon-tixjpg.jpg" width={30} alt="logo" />
+          <img src="../icon-tixjpg.jpg" width={30} alt="logo" />
         </NavLink>
         <ul className="m-0 hidden lg:flex text-orange-600">
           <li>
@@ -63,10 +63,47 @@ const Header = () => {
         </ul>
         {Object.keys(currentUser).length ? (
           <div className="items-center hidden flex-shrink-0 md:flex">
-            <div>
-              <p className="m-0 p-2 bg-orange-200 rounded-md hover:cursor-pointer">{currentUser.taiKhoan}</p>
+            <div title="Tài khoản">
+              <Dropdown
+                trigger={["click"]}
+                overlay={
+                  <Menu
+                    theme="light"
+                    className="mt-4 border border-slate-400 shadow-xl"
+                    items={[
+                      {
+                        key: "1",
+
+                        className: "font-bold text-lg",
+                        label: currentUser.taiKhoan,
+                      },
+                      {
+                        key: "2",
+                        label: (
+                          <Link to={currentUser.maLoaiNguoiDung === "KhachHang" ? "/user/profile" : "/admin/profile"}>
+                            Trang cá nhân
+                          </Link>
+                        ),
+                        icon: <RightSquareOutlined />,
+                      },
+                      {
+                        key: "3",
+                        label: <Button onClick={() => dispatch(logout())}>Đăng xuất</Button>,
+                      },
+                    ]}
+                  />
+                }
+              >
+                <a onClick={(e) => e.preventDefault()}>
+                  <Space>
+                    <UserOutlined className="p-3 rounded-full border-2 bg-slate-300 text-black hover:border-slate-500 transition-colors duration-500" />
+                  </Space>
+                </a>
+              </Dropdown>
+              {/* <p className="m-0 p-2 bg-orange-200 rounded-md hover:cursor-pointer">{currentUser.taiKhoan}</p> */}
             </div>
             <Button
+              title="Đăng xuất"
               className="flex items-center border-orange-600 hover:bg-orange-600 hover:text-white mx-1 text-lg rounded-md focus:text-orange-600"
               onClick={() => dispatch(logout())}
             >
@@ -92,7 +129,9 @@ const Header = () => {
           </div>
         )}
 
-        <Button className="md:hidden border-orange-600 hover:text-orange-600 text-orange-600 focus:text-orange-600">=</Button>
+        <Button className="md:hidden border-orange-600 hover:text-orange-600 text-orange-600 focus:text-orange-600">
+          =
+        </Button>
       </div>
     </Layout.Header>
   );

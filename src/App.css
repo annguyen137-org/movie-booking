@@ -1,1 +1,17 @@
-@import '~antd/dist/antd.css';
+@import "~antd/dist/antd.css";
+
+.ant-table-thead .ant-table-cell {
+  background-color: rgb(207, 204, 204);
+  border-top: 1px solid rgba(0, 0, 0, 0.5) !important;
+}
+
+.ant-table-thead .ant-table-cell,
+.ant-table-tbody .ant-table-row td {
+  border-left: 1px solid rgba(0, 0, 0, 0.5) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5) !important;
+}
+
+.ant-table-thead .ant-table-cell:last-child,
+.ant-table-tbody .ant-table-row td:last-child {
+  border-right: 1px solid rgba(0, 0, 0, 0.5) !important;
+}

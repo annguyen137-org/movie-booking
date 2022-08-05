@@ -44,9 +44,18 @@ const Purchase = () => {
   useEffect(() => {
     if (bookedSuccess) {
       notification["success"]({ message: "Đặt vé thành công" });
-      navigate(`/purchase/${showtimeId}/success`, {
-        state: { from: location.pathname, successTickets: { ...ticketsData.thongTinPhim, selectedSeats: selectedSeats } },
-      });
+      setTimeout(() => {
+        navigate(`/purchase/${showtimeId}/success`, {
+          state: {
+            from: location.pathname,
+            successTickets: { ...ticketsData.thongTinPhim, selectedSeats: selectedSeats },
+          },
+        });
+      }, 1000);
+
+      return () => {
+        notification.destroy();
+      };
     }
   }, [bookedSuccess]);
 
@@ -99,7 +108,10 @@ const Purchase = () => {
                   Địa chỉ: <span className="text-green-600 text-md">{ticketsData.thongTinPhim?.diaChi}</span>
                 </p>
                 <p className=" border-slate-600 border-b  font-bold pb-1">
-                  Rạp: <span className="text-green-600 text-lg bg-orange-300 rounded-md p-1">{ticketsData.thongTinPhim?.tenRap}</span>
+                  Rạp:{" "}
+                  <span className="text-green-600 text-lg bg-orange-300 rounded-md p-1">
+                    {ticketsData.thongTinPhim?.tenRap}
+                  </span>
                 </p>
               </div>
               <div>

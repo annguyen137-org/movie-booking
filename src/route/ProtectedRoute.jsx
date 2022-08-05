@@ -1,15 +1,8 @@
-import PageNotFound from "pages/PageNotFound/PageNotFound";
 import React from "react";
-import { useSelector } from "react-redux";
-import { Outlet, Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = () => {
-  const { bookedSuccess } = useSelector((state) => state.tickets);
-
-  const isAuth = bookedSuccess;
-  const location = useLocation();
-
-  return !!isAuth ? <Outlet context={location.state.successTickets} /> : <Navigate to={location.state?.from ?? "/"} />;
+const ProtectedRoute = ({ isAuth, role, component }) => {
+  return Object.keys(isAuth).length && isAuth.maLoaiNguoiDung === role ? component : <Navigate to="/" />;
 };
 
 export default ProtectedRoute;

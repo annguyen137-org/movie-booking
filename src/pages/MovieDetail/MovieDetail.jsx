@@ -32,7 +32,9 @@ const MovieDetail = () => {
         <div className="flex flex-col md:flex-row w-full h-full">
           <div className="md:w-1/2 lg:w-2/5 h-96 p-5 relative">
             <img src={movieDetail.hinhAnh} className="w-full h-full" alt={movieDetail.tenPhim} />
-            {movieDetail.hot && <span className="text-white bg-red-600 text-sm mx-2 p-1 absolute top-5 left-5 animate-bounce">HOT</span>}
+            {movieDetail.hot && (
+              <span className="text-white bg-red-600 text-sm mx-2 p-1 absolute top-5 left-5 animate-bounce">HOT</span>
+            )}
           </div>
 
           <div className="md:w-1/2 lg:w-3/5 text-left p-5">
@@ -66,7 +68,7 @@ const MovieDetail = () => {
               </div>
               <div>
                 <p className="text-lg font-bold m-0">Đánh giá: </p>
-                <Rate style={{ fontSize: "30px" }} disabled value={movieDetail.danhGia / 2}></Rate>
+                <Rate allowHalf style={{ fontSize: "30px" }} disabled value={movieDetail.danhGia / 2}></Rate>
               </div>
             </div>
           </div>
@@ -91,7 +93,10 @@ const MovieDetail = () => {
                   }
                   key={brand.maHeThongRap}
                 >
-                  <div className="flex flex-col items-start p-2 w-full" style={{ height: "500px", overflowY: "scroll" }}>
+                  <div
+                    className="flex flex-col items-start p-2 w-full"
+                    style={{ height: "500px", overflowY: "scroll" }}
+                  >
                     {brand.cumRapChieu.map((theater) => {
                       return (
                         <div key={theater.maCumRap} className="py-3 border-b border-slate-300 text-left">
@@ -111,7 +116,9 @@ const MovieDetail = () => {
                                       {[...showtime.ngayChieuGioChieu.split("T")[0].split("-")].reverse().join("-")}
                                     </span>
                                   </p>
-                                  <p className="m-0 font-bold text-green-700">{showtime.ngayChieuGioChieu.split("T")[1].slice(0, 5)}</p>
+                                  <p className="m-0 font-bold text-green-700">
+                                    {showtime.ngayChieuGioChieu.split("T")[1].slice(0, 5)}
+                                  </p>
                                 </div>
                               );
                             })}
