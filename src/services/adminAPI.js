@@ -1,7 +1,10 @@
 import axiosClient, { GROUPID } from "./axiosClient";
 
 const adminAPI = {
-  getMovieList: () => {
+  getMovieList: (keyword = "") => {
+    if (keyword !== "") {
+      return axiosClient.get("QuanLyPhim/LayDanhSachPhim", { params: { maNhom: GROUPID, tenPhim: keyword } });
+    }
     return axiosClient.get("QuanLyPhim/LayDanhSachPhim", { params: { maNhom: GROUPID } });
   },
 

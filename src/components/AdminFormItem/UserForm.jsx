@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { UploadOutlined } from "@ant-design/icons";
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  message,
-  notification,
-  Select,
-  Switch,
-  TimePicker,
-  Upload,
-} from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, notification, Switch } from "antd";
 import moment from "moment";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { GROUPID } from "services/axiosClient";
 import { useDispatch } from "react-redux";
+import { addMovie, updateMovie } from "redux/slices/adminSlice";
 
 const UserForm = ({ editFilm }) => {
   const dispatch = useDispatch();
-  const [file, setFile] = useState({});
+  // const [file, setFile] = useState({});
   const [imgSrc, setImgSrc] = useState(editFilm?.hinhAnh ?? "");
 
   useEffect(() => {
@@ -30,12 +18,6 @@ const UserForm = ({ editFilm }) => {
       URL.revokeObjectURL(imgSrc);
     };
   }, [imgSrc]);
-
-  useEffect(() => {
-    return () => {
-      notification.destroy();
-    };
-  }, []);
 
   const filmItemSchema = yup.object().shape({
     tenPhim: yup
@@ -54,7 +36,7 @@ const UserForm = ({ editFilm }) => {
     ngayKhoiChieu: yup
       .string()
       .required("Chọn ngày khởi chiếu")
-      .default(editFilm?.ngayKhoiChieu ?? ""),
+      .default(moment(editFilm?.ngayKhoiChieu) ?? ""),
     sapChieu: yup
       .boolean()
       .required()
@@ -63,19 +45,19 @@ const UserForm = ({ editFilm }) => {
       .boolean()
       .required()
       .default(editFilm?.dangChieu ?? false),
-    Hot: yup
+    hot: yup
       .boolean()
       .required()
-      .default(editFilm?.Hot ?? false),
+      .default(editFilm?.hot ?? false),
     danhGia: yup
       .number()
       .required("Nhập số ★ đánh giá")
       .min(1)
       .max(10)
       .default(editFilm?.danhGia ?? 1),
-    hinhAnh: yup.mixed().test("Hình không được trống", "Chọn hình", (file) => {
-      return file && file.length;
-    }),
+    // hinhAnh: yup.mixed().test("Chọn hình", "Kích thước file vượt quá dung lượng cho phép", (file) => {
+    //   return file && file <= 1024;
+    // }),
   });
 
   const {
@@ -94,31 +76,42 @@ const UserForm = ({ editFilm }) => {
       trailer: editFilm?.trailer ?? "",
       moTa: editFilm?.moTa ?? "",
       maNhom: GROUPID,
-      ngayKhoiChieu: editFilm?.ngayKhoiChieu ?? "",
+      ngayKhoiChieu: editFilm ? moment(editFilm?.ngayKhoiChieu) : "",
       sapChieu: editFilm?.sapChieu ?? false,
       dangChieu: editFilm?.dangChieu ?? false,
-      Hot: editFilm?.Hot ?? false,
+      hot: editFilm?.hot ?? false,
       danhGia: editFilm?.danhGia ?? 1,
-      hinhAnh: editFilm?.danhGia ?? {},
+      hinhAnh: {},
     },
   });
 
   const onSubmit = (values) => {
     // console.log(moment(new Date(values.ngayKhoiChieu)).format("DD/MM/YYYY"));
+    // console.log(values.hinhAnh[0]);
+    const date = moment(new Date(values.ngayKhoiChieu)).format("DD/MM/YYYY");
+
     let formData = new FormData();
+
+    if (editFilm) {
+      formData.append("maPhim", editFilm.maPhim);
+    }
 
     for (let key in values) {
       if (key !== "hinhAnh") {
         if (key === "ngayKhoiChieu") {
-          formData.append(key, moment(new Date(values.key)).format("DD/MM/YYYY"));
+          formData.append("ngayKhoiChieu", date.toString());
+        } else {
+          formData.append(key, values[key]);
         }
-        formData.append(key, values[key]);
-      } else {
+      } else if (values.hinhAnh.length) {
         formData.append("File", values.hinhAnh[0], values.hinhAnh[0].name);
       }
     }
-
-    // console.log(formData.get("File"));
+    if (editFilm) {
+      dispatch(updateMovie(formData));
+    } else {
+      dispatch(addMovie(formData));
+    }
   };
   const onError = () => {
     notification["error"]({ message: "Thêm phim thất bại", description: "Kiểm tra lại các trường thông tin" });
@@ -186,7 +179,7 @@ const UserForm = ({ editFilm }) => {
               <Controller
                 control={control}
                 name="ngayKhoiChieu"
-                defaultValue={editFilm?.ngayKhoiChieu ?? ""}
+                defaultValue={moment(editFilm?.ngayKhoiChieu) ?? ""}
                 render={({ field }) => <DatePicker {...field} format={"DD/MM/YYYY"} allowClear />}
               />
             </Form.Item>
@@ -215,8 +208,8 @@ const UserForm = ({ editFilm }) => {
             <Form.Item label="Hot" valuePropName="checked">
               <Controller
                 control={control}
-                name="Hot"
-                defaultValue={editFilm?.Hot ?? false}
+                name="hot"
+                defaultValue={editFilm?.hot ?? false}
                 render={({ field }) => <Switch onChange={field.onChange} checked={field.value} />}
               />
             </Form.Item>
@@ -231,10 +224,10 @@ const UserForm = ({ editFilm }) => {
 
             <Form.Item
               label="Hình phim"
-              required
               hasFeedback
               validateStatus={errors.hinhAnh ? "error" : isValid ? "success" : ""}
               help={errors.hinhAnh?.message}
+              tooltip={"Dung lượng nhỏ hơn 1MB"}
             >
               <div className="flex items-center">
                 <input
@@ -247,26 +240,28 @@ const UserForm = ({ editFilm }) => {
                         let uploadFile = e.target.files[0];
                         let preview = URL.createObjectURL(uploadFile);
                         setImgSrc(preview);
-                        setFile(uploadFile);
                       } else {
                         setImgSrc("");
-                        setFile({});
                       }
                     },
                   })}
                   type="file"
+                  accept="image/*"
                 />
-                <Button
-                  size="small"
-                  type="danger"
-                  onClick={() => {
-                    setImgSrc("");
-                    setFile({});
-                    resetField("hinhAnh");
-                  }}
-                >
-                  Xóa
-                </Button>
+                {imgSrc ? (
+                  <Button
+                    size="small"
+                    type="danger"
+                    onClick={() => {
+                      setImgSrc("");
+                      resetField("hinhAnh");
+                    }}
+                  >
+                    Xóa
+                  </Button>
+                ) : (
+                  <></>
+                )}
               </div>
             </Form.Item>
           </div>
@@ -284,7 +279,7 @@ const UserForm = ({ editFilm }) => {
 
         <Form.Item className="mx-20 mt-5">
           <Button type="primary" htmlType="submit">
-            Thêm phim
+            {editFilm ? "Cập nhật" : "Thêm phim"}
           </Button>
         </Form.Item>
       </Form>

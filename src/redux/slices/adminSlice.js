@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import adminAPI from "services/adminAPI";
+import ticketsAPI from "services/ticketsAPI";
 
 const initialState = {
   movieList: [],
@@ -10,9 +11,9 @@ const initialState = {
   error: "",
 };
 
-export const getMovieList = createAsyncThunk("admin/getMovieList", async () => {
+export const getMovieList = createAsyncThunk("admin/getMovieList", async (keyword = "") => {
   try {
-    const data = await adminAPI.getMovieList();
+    const data = await adminAPI.getMovieList(keyword);
     return data;
   } catch (error) {
     throw error;
@@ -49,6 +50,15 @@ export const updateMovie = createAsyncThunk("admin/updateMovie", async (FormData
 export const deleteMovie = createAsyncThunk("admin/deleteMovie", async (movieId) => {
   try {
     const data = await adminAPI.deleteMovie(movieId);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+});
+
+export const createShowtime = createAsyncThunk("admin/createShowtime", async (showtime) => {
+  try {
+    const data = await ticketsAPI.createShowtime(showtime);
     return data;
   } catch (error) {
     throw error;
@@ -112,6 +122,16 @@ const adminSlice = createSlice({
       return { ...state, isLoading: false, actionSuccess: true, actionResponeAPI: action.payload };
     });
     builder.addCase(deleteMovie.rejected, (state, action) => {
+      return { ...state, isLoading: false, actionSuccess: false, error: action.error.message };
+    });
+    // CREATE SHOƯTIME
+    builder.addCase(createShowtime.pending, (state) => {
+      return { ...state, isLoading: true };
+    });
+    builder.addCase(createShowtime.fulfilled, (state, action) => {
+      return { ...state, isLoading: false, actionSuccess: true, actionResponeAPI: action.payload };
+    });
+    builder.addCase(createShowtime.rejected, (state, action) => {
       return { ...state, isLoading: false, actionSuccess: false, error: action.error.message };
     });
   },

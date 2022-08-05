@@ -2,14 +2,14 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import theaterAPI from "services/theaterAPI";
 
 const initialState = {
-  theatersBrand: [],
+  theatersBrandWithShowtime: [],
   isTheatersLoading: false,
   error: "",
 };
 
-export const getTheatersBrand = createAsyncThunk("theaters/getTheatersBrand", async () => {
+export const getTheatersBrandWithShowtime = createAsyncThunk("theaters/getTheatersBrandWithShowtime", async () => {
   try {
-    const data = theaterAPI.getTheatersBrand();
+    const data = theaterAPI.getTheatersBrandWithShowtime();
     return data;
   } catch (error) {
     throw error;
@@ -21,14 +21,14 @@ const theatersSlice = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getTheatersBrand.pending, (state, action) => {
+    builder.addCase(getTheatersBrandWithShowtime.pending, (state, action) => {
       return { ...state, error: "", isTheatersLoading: true };
     });
 
-    builder.addCase(getTheatersBrand.fulfilled, (state, action) => {
-      return { ...state, isTheatersLoading: false, theatersBrand: action.payload, error: "" };
+    builder.addCase(getTheatersBrandWithShowtime.fulfilled, (state, action) => {
+      return { ...state, isTheatersLoading: false, theatersBrandWithShowtime: action.payload, error: "" };
     });
-    builder.addCase(getTheatersBrand.rejected, (state, action) => {
+    builder.addCase(getTheatersBrandWithShowtime.rejected, (state, action) => {
       return { ...state, isTheatersLoading: false, error: action.error.message };
     });
   },
