@@ -4,7 +4,7 @@ import accountAPI from "services/accountAPI";
 const initialState = {
   accountInfo: {},
   bookedTickets: [],
-  isUpdateSuccess: false,
+  isUpdateSuccess: undefined,
   isLoading: false,
   error: "",
 };
@@ -32,7 +32,7 @@ const accountSlice = createSlice({
   initialState: initialState,
   reducers: {
     resetAccountReducer: (state) => {
-      return { ...state, accountInfo: {}, isUpdateSuccess: false, isLoading: false, error: "" };
+      return { ...state, accountInfo: {}, bookedTickets: [], isUpdateSuccess: undefined, isLoading: false, error: "" };
     },
   },
   extraReducers: (builder) => {
@@ -48,7 +48,7 @@ const accountSlice = createSlice({
     //
 
     builder.addCase(updateAccountInfo.pending, (state, action) => {
-      return { ...state, isLoading: true, isUpdateSuccess: false };
+      return { ...state, isLoading: true };
     });
     builder.addCase(
       updateAccountInfo.fulfilled,

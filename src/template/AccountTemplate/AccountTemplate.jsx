@@ -20,9 +20,13 @@ const AccountTemplate = () => {
   }, []);
 
   useEffect(() => {
-    if (isUpdateSuccess) {
+    if (isUpdateSuccess === true) {
+      notification["success"]({ message: "Cập nhật thông tin thành công" });
       dispatch(resetAccountReducer());
       dispatch(getAccountInfo());
+    } else if (isUpdateSuccess === false) {
+      notification["error"]({ message: "Cập nhật thông tin không thành công" });
+      dispatch(resetAccountReducer());
     }
   }, [isUpdateSuccess]);
 
@@ -105,7 +109,7 @@ const AccountTemplate = () => {
             </div>
           </div>
         </Header>
-        <Content className="px-5 border border-slate-300 h-full">
+        <Content className="pl-10 lg:px-5 border border-slate-300 h-full">
           {isLoading ? <PageLoading classname={"min-h-full"} /> : <Outlet />}
         </Content>
         {/* <Footer>@ 2022 TIX</Footer> */}

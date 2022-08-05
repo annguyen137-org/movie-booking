@@ -8,7 +8,7 @@ const ticketsAPI = {
     return axiosClient.post("QuanLyDatVe/DatVe", ticketsInfo);
   },
   createShowtime: (showtime) => {
-    return axiosClient.post("QuanLyDatVe/TaoLichChieu", { params: { lich: showtime } });
+    return axiosClient.post("QuanLyDatVe/TaoLichChieu", showtime);
   },
 };
 
