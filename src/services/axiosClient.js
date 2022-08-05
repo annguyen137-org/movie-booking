@@ -25,9 +25,11 @@ axiosClient.interceptors.request.use((config) => {
   // config là thông tin của request sẽ được gửi lên server
   // Kiểm tra xem user đã đăng nhập hay chưa để lấy accessToken gắn vào headers
   if (config.headers) {
-    const { accessToken } = store.getState().auth.currentUser;
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    if (store.getState().auth.currentUser) {
+      const { accessToken } = store.getState().auth.currentUser;
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
     }
   }
 

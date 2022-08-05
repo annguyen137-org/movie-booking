@@ -2,31 +2,44 @@ import { Button } from "antd";
 import PageLoading from "components/Loading/PageLoading";
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { NavLink, useOutletContext } from "react-router-dom";
+import { Navigate, NavLink, useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { currencyVNDFormat } from "utils/currencyFormat";
 import { resetTicketsReducer } from "redux/slices/ticketsSlice";
 
 const SuccessConfirm = () => {
-  const successTickets = useOutletContext();
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const { isConfirmLoading } = useSelector((state) => state.tickets);
 
-  const handleResetTicketReducer = () => {
+  const location = useLocation();
+
+  if (!location.state) {
+    return <Navigate to="/" replace />;
+  }
+
+  const { successTickets } = location.state;
+
+  const handleBackToHome = () => {
     dispatch(resetTicketsReducer());
+    navigate("/", { replace: true });
+  };
+
+  window.onpopstate = () => {
+    dispatch(resetTicketsReducer());
+    navigate("/", { replace: true });
   };
 
   return (
     <div className="container mx-auto text-center px-5 md:px-10 lg:px-40 mt-1">
       {isConfirmLoading && <PageLoading />}
-      <p className="font-bold text-red-500">Trước khi tắt trang, vui lòng chụp lại trang này ! Xin cảm ơn</p>
+      <p className="font-bold text-red-500">Vui lòng lưu lại thông tin đặt vé này ! Xin cảm ơn</p>
 
       <div className="px-10 lg:px-40 bg-slate">
         <div className="bg-slate-300 rounded-md">
           <div className="flex justify-between items-center">
             <div>
               <NavLink to="/">
-                <Button type="primary" onClick={handleResetTicketReducer}>
+                <Button type="primary" onClick={handleBackToHome}>
                   Back to home
                 </Button>
               </NavLink>
@@ -47,7 +60,8 @@ const SuccessConfirm = () => {
               <p className="text-md font-bold p-1 bg-slate-200">{successTickets.ngayChieu}</p>
               <p className="text-md font-bold p-1 bg-slate-200">{successTickets.gioChieu}</p>
               <p className="text-md font-bold p-1 bg-slate-200">
-                {currencyVNDFormat.format(successTickets.selectedSeats?.reduce((total, seat) => total + seat.giaVe, 0))} VND
+                {currencyVNDFormat.format(successTickets.selectedSeats?.reduce((total, seat) => total + seat.giaVe, 0))}{" "}
+                VND
               </p>
               <p className="text-md font-bold p-2 bg-slate-200">
                 Ghế:{" "}
