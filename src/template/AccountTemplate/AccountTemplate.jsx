@@ -5,6 +5,8 @@ import { useNavigate, Outlet } from "react-router-dom";
 import PageLoading from "components/Loading/PageLoading";
 import { logout } from "redux/slices/authSlice";
 import { getAccountInfo, resetAccountReducer } from "redux/slices/accountSlice";
+import { resetTicketsReducer } from "redux/slices/ticketsSlice";
+import { resetAdminReducer } from "redux/slices/adminSlice";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -91,7 +93,16 @@ const AccountTemplate = () => {
               <Button type="primary" className="mx-3" onClick={() => navigate("/")}>
                 Về trang chủ
               </Button>
-              <Button type="danger" className="mx-3" onClick={() => dispatch(logout())}>
+              <Button
+                type="danger"
+                className="mx-3"
+                onClick={() => {
+                  dispatch(logout());
+                  dispatch(resetAccountReducer());
+                  dispatch(resetTicketsReducer());
+                  dispatch(resetAdminReducer());
+                }}
+              >
                 Đăng xuất
               </Button>
             </div>

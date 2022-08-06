@@ -119,6 +119,19 @@ const adminSlice = createSlice({
     resetAdminActionStatus: (state) => {
       return { ...state, isLoaidng: false, actionSuccess: null, actionResponeAPI: null, error: "" };
     },
+    resetAdminReducer: (state) => {
+      return {
+        ...state,
+        movieList: [],
+        editMovieData: {},
+        userList: [],
+        editUserDate: {},
+        isLoaidng: false,
+        actionResponeAPI: null,
+        actionSuccess: null,
+        error: "",
+      };
+    },
   },
   extraReducers: (builder) => {
     // GET MOVIE LIST
@@ -234,6 +247,6 @@ const adminSlice = createSlice({
   },
 });
 
-export const { resetAdminActionStatus } = adminSlice.actions;
+export const { resetAdminActionStatus, resetAdminReducer } = adminSlice.actions;
 
 export default adminSlice.reducer;
