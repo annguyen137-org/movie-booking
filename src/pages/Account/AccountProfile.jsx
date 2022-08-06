@@ -123,10 +123,12 @@ const AccountProfile = () => {
   }, [isUpdateSuccess]);
 
   useEffect(() => {
-    const { maLoaiNguoiDung } = JSON.parse(localStorage.getItem("user"));
+    if (JSON.parse(localStorage.getItem("user"))) {
+      const { maLoaiNguoiDung } = JSON.parse(localStorage.getItem("user"));
 
-    if (accountInfo.maLoaiNguoiDung !== maLoaiNguoiDung) {
-      showModal(true);
+      if (accountInfo.maLoaiNguoiDung !== maLoaiNguoiDung) {
+        showModal(true);
+      }
     }
   }, [accountInfo.maLoaiNguoiDung]);
 

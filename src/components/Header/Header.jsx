@@ -7,6 +7,9 @@ import { moviesRef } from "../../pages/Home/MovieShowing/MovieShowing";
 import { theatersRef } from "../../pages/Home/TheaterTabs/TheaterTabs";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "redux/slices/authSlice";
+import { resetAccountReducer } from "redux/slices/accountSlice";
+import { resetTicketsReducer } from "redux/slices/ticketsSlice";
+import { resetAdminReducer } from "redux/slices/adminSlice";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -88,7 +91,18 @@ const Header = () => {
                       },
                       {
                         key: "3",
-                        label: <Button onClick={() => dispatch(logout())}>Đăng xuất</Button>,
+                        label: (
+                          <Button
+                            onClick={() => {
+                              dispatch(logout());
+                              dispatch(resetAccountReducer());
+                              dispatch(resetTicketsReducer());
+                              dispatch(resetAdminReducer());
+                            }}
+                          >
+                            Đăng xuất
+                          </Button>
+                        ),
                       },
                     ]}
                   />
