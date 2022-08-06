@@ -7,6 +7,10 @@ const accountAPI = {
   updateAccountInfo: (updateInfo) => {
     return axiosClient.put("QuanLyNguoiDung/CapNhatThongTinNguoiDung", updateInfo);
   },
+
+  getAccountRole: () => {
+    return axiosClient.get("QuanLyNguoiDung/LayDanhSachLoaiNguoiDung");
+  },
 };
 
 export default accountAPI;
