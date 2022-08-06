@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Button, Layout, Menu, notification } from "antd";
-import { UserOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Outlet } from "react-router-dom";
 import PageLoading from "components/Loading/PageLoading";
@@ -18,17 +17,6 @@ const AccountTemplate = () => {
   useEffect(() => {
     dispatch(getAccountInfo());
   }, []);
-
-  useEffect(() => {
-    if (isUpdateSuccess === true) {
-      notification["success"]({ message: "Cập nhật thông tin thành công" });
-      dispatch(resetAccountReducer());
-      dispatch(getAccountInfo());
-    } else if (isUpdateSuccess === false) {
-      notification["error"]({ message: "Cập nhật thông tin không thành công" });
-      dispatch(resetAccountReducer());
-    }
-  }, [isUpdateSuccess]);
 
   const getMenuItem = (key, label, path, children) => {
     return {
@@ -65,7 +53,7 @@ const AccountTemplate = () => {
           <p className="text-gray-100 m-0 font-bold text-lg mx-2">Trang cá nhân</p>
         </div>
         <div className="mt-10 bg-slate-300">
-          <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" defaultOpenKeys={["1", "2", "3"]}>
+          <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" defaultOpenKeys={["1", "2", "3", "4"]}>
             {accountInfo.maLoaiNguoiDung === "KhachHang"
               ? userMenuItems.map((menuItem) => {
                   return (

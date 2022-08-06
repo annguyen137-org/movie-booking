@@ -71,7 +71,7 @@ function App() {
 
         <Route path="user-management" element={<UserManagement />}>
           <Route path="user-list" element={<UserList />} />
-          <Route path="edit-user/:userAccount" element={<EditUser />} />
+          <Route path="edit-user/:accountName" element={<EditUser />} />
           <Route path="add-user" element={<AddUser />} />
         </Route>
       </Route>

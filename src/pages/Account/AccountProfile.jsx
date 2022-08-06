@@ -5,20 +5,37 @@ import { Button, Input, Form, Checkbox, notification, Select } from "antd";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
-import { updateAccountInfo, resetAccountReducer } from "redux/slices/accountSlice";
+import { updateAccountInfo, resetAccountReducer, resetUpdateStatus } from "redux/slices/accountSlice";
 import { logout } from "redux/slices/authSlice";
 import { GROUPID } from "services/axiosClient";
 import { useNavigate } from "react-router-dom";
 import useModalHook from "utils/useModalHook";
 import PopupModal from "components/Modal/PopupModal";
+import accountAPI from "services/accountAPI";
 
 const AccountProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [hideEdit, setHideEdit] = useState(true);
   const [disableButton, setDisableButton] = useState(false);
-  const { accountInfo } = useSelector((state) => state.account);
+  const { accountInfo, isUpdateSuccess } = useSelector((state) => state.account);
   const { visible, showModal, closeModal } = useModalHook();
+
+  const [roleState, setRoleState] = useState([]);
+
+  const { getAccountRole } = accountAPI;
+
+  useEffect(() => {
+    if (Object.keys(accountInfo).length) {
+      const fetchRole = async () => {
+        try {
+          const data = await getAccountRole();
+          setRoleState([...data]);
+        } catch (error) {}
+      };
+      fetchRole();
+    }
+  }, [accountInfo]);
 
   const handleHideEdit = () => {
     setHideEdit(!hideEdit);
@@ -95,16 +112,30 @@ const AccountProfile = () => {
     }
   }, [isValid]);
 
+  useEffect(() => {
+    if (isUpdateSuccess === true) {
+      notification["success"]({ message: "Cập nhật thông tin thành công", duration: 1.5 });
+      dispatch(resetUpdateStatus());
+    } else if (isUpdateSuccess === false) {
+      notification["error"]({ message: "Cập nhật thông tin không thành công", duration: 1.5 });
+      dispatch(resetUpdateStatus());
+    }
+  }, [isUpdateSuccess]);
+
+  useEffect(() => {
+    const { maLoaiNguoiDung } = JSON.parse(localStorage.getItem("user"));
+
+    if (accountInfo.maLoaiNguoiDung !== maLoaiNguoiDung) {
+      showModal(true);
+    }
+  }, [accountInfo.maLoaiNguoiDung]);
+
   return (
     <>
       <div className="w-full lg:p-8 h-full bg-slate-300 text-gray-900">
         <div className="flex">
           <div className="hidden lg:w-1/6 h-40 mr-5">
-            <img
-              src="https://media.istockphoto.com/vectors/user-icon-flat-isolated-on-white-background-user-symbol-vector-vector-id1300845620?k=20&m=1300845620&s=612x612&w=0&h=f4XTZDAv7NPuZbG0habSpU0sNgECM0X7nbKzTUta3n8="
-              alt="avtar-profile"
-              className="object-cover object-center w-full h-full"
-            />
+            <img src="" alt="avtar-profile" className="object-cover object-center w-full h-full" />
           </div>
           {hideEdit ? (
             <div className="flex flex-col lg:flex-row ml-5 w-full">
@@ -265,8 +296,12 @@ const AccountProfile = () => {
                           defaultValue={accountInfo.maLoaiNguoiDung}
                           render={({ field }) => (
                             <Select defaultValue={accountInfo.maLoaiNguoiDung} {...field} placeholder="Loại người dùng">
-                              <Select.Option value="KhachHang">Khách hàng</Select.Option>
-                              <Select.Option value="QuanTri">Quản trị</Select.Option>
+                              {roleState.length &&
+                                roleState.map((role, index) => (
+                                  <Select.Option key={index} value={role.maLoaiNguoiDung}>
+                                    {role.tenLoai}
+                                  </Select.Option>
+                                ))}
                             </Select>
                           )}
                         />
@@ -297,8 +332,21 @@ const AccountProfile = () => {
           </div>
         </div>
       </div>
-      <PopupModal visible={visible} onCancel={closeModal}>
-        <div className="flex justify-center items-center"></div>
+      <PopupModal visible={visible} closable={false}>
+        <div className="flex justify-center items-center">
+          <p>Bạn đã thay đổi role tài khoản! Vui lòng đăng xuất và đăng nhập lại để sử dụng tính năng</p>
+          <div className="mt-5">
+            <Button
+              type="danger"
+              onClick={() => {
+                dispatch(logout());
+                dispatch(resetAccountReducer());
+              }}
+            >
+              Đăng xuất
+            </Button>
+          </div>
+        </div>
       </PopupModal>
     </>
   );

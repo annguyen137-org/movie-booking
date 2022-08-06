@@ -27,7 +27,7 @@ const EditFilm = () => {
       dispatch(resetAdminActionStatus());
       dispatch(fetchEditMovieData(movieId));
       setTimeout(() => {
-        navigate("/admin/films/film-list");
+        navigate("/admin/films/film-list", { state: location.state });
       }, 2000);
     }
   }, [actionSuccess, actionResponeAPI]);

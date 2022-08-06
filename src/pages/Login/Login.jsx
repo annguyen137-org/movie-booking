@@ -42,7 +42,7 @@ const Login = () => {
       notification["success"]({
         message: "Đăng nhập thành công",
         description: location?.state ? "Chuyển về trang đặt vé" : "Chuyển về trang chủ",
-        duration: 2,
+        duration: 1,
       });
 
       setTimeout(() => {

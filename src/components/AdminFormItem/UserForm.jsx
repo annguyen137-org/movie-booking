@@ -1,289 +1,251 @@
 import React, { useEffect, useState } from "react";
-import { Button, DatePicker, Form, Input, InputNumber, notification, Switch } from "antd";
-import moment from "moment";
+import { Button, Form, Input, notification, Select } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { GROUPID } from "services/axiosClient";
-import { useDispatch } from "react-redux";
-import { addMovie, updateMovie } from "redux/slices/adminSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { addUser, updateUser } from "redux/slices/adminSlice";
+import accountAPI from "services/accountAPI";
 
-const UserForm = ({ editFilm }) => {
+const UserForm = ({ editUser }) => {
+  const [disableButton, setDisableButton] = useState(false);
+
   const dispatch = useDispatch();
-  // const [file, setFile] = useState({});
-  const [imgSrc, setImgSrc] = useState(editFilm?.hinhAnh ?? "");
+  const navigate = useNavigate();
+
+  const { getAccountRole } = accountAPI;
+  const [roles, setRoles] = useState([]);
 
   useEffect(() => {
-    return () => {
-      URL.revokeObjectURL(imgSrc);
+    const fetchRole = async () => {
+      try {
+        const data = await getAccountRole();
+        setRoles(data);
+      } catch (error) {}
     };
-  }, [imgSrc]);
+    fetchRole();
+  }, []);
 
-  const filmItemSchema = yup.object().shape({
-    tenPhim: yup
+  const registationSchema = yup.object().shape({
+    taiKhoan: yup
       .string()
-      .required("Tên phim không được trống")
-      .default(editFilm?.tenPhim ?? ""),
-    trailer: yup
+      .required("Tài khoản không được trống!")
+      .default(editUser?.taiKhoan ?? ""),
+    matKhau: yup
       .string()
-      .required("Nhập link trailer")
-      .default(editFilm?.trailer ?? ""),
-    moTa: yup
+      .required("Mật khẩu không được trống!")
+      .min(6, "Mật khẩu ít nhất 6 ký tự")
+      .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{6,}$/, "Mật khẩu yếu!")
+      .default(editUser?.matKhau ?? ""),
+    email: yup
       .string()
-      .required("Nhập mô tả")
-      .default(editFilm?.moTa ?? ""),
+      .email("Email không đúng định dạng")
+      .required("Email không được trống!")
+      .default(editUser?.email ?? ""),
+    soDT: yup
+      .string()
+      .required("Số DT không được trống!")
+      .matches(/^[0-9]+$/, "Số DT không đúng định dạng")
+      .default(editUser?.soDT ?? ""),
+    maLoaiNguoiDung: yup
+      .string()
+      .required()
+      .default(editUser?.maLoaiNguoiDung ?? "KhachHang"),
+    hoTen: yup
+      .string()
+      .required("Họ tên không được trống!")
+      .matches(
+        "^[a-zA-Z_ÀÁÂÃÈÉÊẾÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶ" +
+          "ẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợ" +
+          "ụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s]+$",
+        "Tên chỉ gồm ký tự từ a->z"
+      )
+      .default(editUser?.hoTen ?? ""),
     maNhom: yup.string().required().default(GROUPID),
-    ngayKhoiChieu: yup
-      .string()
-      .required("Chọn ngày khởi chiếu")
-      .default(moment(editFilm?.ngayKhoiChieu) ?? ""),
-    sapChieu: yup
-      .boolean()
-      .required()
-      .default(editFilm?.sapChieu ?? false),
-    dangChieu: yup
-      .boolean()
-      .required()
-      .default(editFilm?.dangChieu ?? false),
-    hot: yup
-      .boolean()
-      .required()
-      .default(editFilm?.hot ?? false),
-    danhGia: yup
-      .number()
-      .required("Nhập số ★ đánh giá")
-      .min(1)
-      .max(10)
-      .default(editFilm?.danhGia ?? 1),
-    // hinhAnh: yup.mixed().test("Chọn hình", "Kích thước file vượt quá dung lượng cho phép", (file) => {
-    //   return file && file <= 1024;
-    // }),
   });
 
   const {
-    register,
     control,
     handleSubmit,
-    clearErrors,
-    resetField,
-    reset,
     formState: { errors, isValid },
+    reset,
+    getFieldState,
   } = useForm({
     mode: "onBlur",
-    resolver: yupResolver(filmItemSchema),
+    resolver: yupResolver(registationSchema),
     defaultValues: {
-      tenPhim: editFilm?.tenPhim ?? "",
-      trailer: editFilm?.trailer ?? "",
-      moTa: editFilm?.moTa ?? "",
+      taiKhoan: editUser?.taiKhoan ?? "",
+      matKhau: editUser?.matKhau ?? "",
+      email: editUser?.email ?? "",
+      soDT: editUser?.soDT ?? "",
+      maLoaiNguoiDung: editUser?.maLoaiNguoiDung ?? "KhachHang",
+      hoTen: editUser?.hoTen ?? "",
       maNhom: GROUPID,
-      ngayKhoiChieu: editFilm ? moment(editFilm?.ngayKhoiChieu) : "",
-      sapChieu: editFilm?.sapChieu ?? false,
-      dangChieu: editFilm?.dangChieu ?? false,
-      hot: editFilm?.hot ?? false,
-      danhGia: editFilm?.danhGia ?? 1,
-      hinhAnh: {},
     },
   });
 
   const onSubmit = (values) => {
-    // console.log(moment(new Date(values.ngayKhoiChieu)).format("DD/MM/YYYY"));
-    // console.log(values.hinhAnh[0]);
-    const date = moment(new Date(values.ngayKhoiChieu)).format("DD/MM/YYYY");
+    setDisableButton(false);
 
-    let formData = new FormData();
-
-    if (editFilm) {
-      formData.append("maPhim", editFilm.maPhim);
-    }
-
-    for (let key in values) {
-      if (key !== "hinhAnh") {
-        if (key === "ngayKhoiChieu") {
-          formData.append("ngayKhoiChieu", date.toString());
-        } else {
-          formData.append(key, values[key]);
-        }
-      } else if (values.hinhAnh.length) {
-        formData.append("File", values.hinhAnh[0], values.hinhAnh[0].name);
-      }
-    }
-    if (editFilm) {
-      dispatch(updateMovie(formData));
+    if (editUser) {
+      dispatch(updateUser(values));
     } else {
-      dispatch(addMovie(formData));
+      dispatch(addUser(values));
     }
   };
+
   const onError = () => {
-    notification["error"]({ message: "Thêm phim thất bại", description: "Kiểm tra lại các trường thông tin" });
+    setDisableButton(true);
+
+    if (errors) {
+      notification["error"]({
+        message: "Trường thông tin rỗng",
+        description: "Vui lòng kiểm tra và nhập lại các trường thông tin",
+      });
+    }
   };
 
   return (
-    <>
-      <Form
-        labelCol={{
-          span: 6,
-        }}
-        wrapperCol={{
-          span: 20,
-        }}
-        layout="horizontal"
-        className="border rounded-md py-5 bg-white"
-        onFinish={handleSubmit(onSubmit, onError)}
-      >
-        <div className="flex w-full">
-          <div className="w-2/3">
-            <Form.Item
-              label="Tên phim"
-              required
-              hasFeedback
-              validateStatus={errors.tenPhim ? "error" : isValid ? "success" : ""}
-              help={errors.tenPhim?.message}
-            >
-              <Controller
-                control={control}
-                name="tenPhim"
-                defaultValue={editFilm?.tenPhim ?? ""}
-                render={({ field }) => <Input {...field} placeholder="Nhập tên phim" allowClear />}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Trailer"
-              required
-              hasFeedback
-              validateStatus={errors.trailer ? "error" : isValid ? "success" : ""}
-              help={errors.trailer?.message}
-            >
-              <Controller
-                control={control}
-                name="trailer"
-                defaultValue={editFilm?.trailer ?? ""}
-                render={({ field }) => <Input {...field} allowClear />}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Mô tả phim"
-              required
-              hasFeedback
-              validateStatus={errors.moTa ? "error" : isValid ? "success" : ""}
-              help={errors.moTa?.message}
-            >
-              <Controller control={control} name="moTa" render={({ field }) => <Input {...field} allowClear />} />
-            </Form.Item>
-            <Form.Item
-              label="Ngày khởi chiếu"
-              required
-              hasFeedback
-              validateStatus={errors.ngayKhoiChieu ? "error" : isValid ? "success" : ""}
-              help={errors.ngayKhoiChieu?.message}
-            >
-              <Controller
-                control={control}
-                name="ngayKhoiChieu"
-                defaultValue={moment(editFilm?.ngayKhoiChieu) ?? ""}
-                render={({ field }) => <DatePicker {...field} format={"DD/MM/YYYY"} allowClear />}
-              />
-            </Form.Item>
+    <div className="flex justify-center items-center">
+      <div className="w-1/2">
+        <Form
+          autoComplete="off"
+          onFinish={handleSubmit(onSubmit, onError)}
+          layout="horizontal"
+          labelCol={{
+            span: 6,
+          }}
+          wrapperCol={{
+            span: 20,
+          }}
+        >
+          <Form.Item
+            label="Tài khoản"
+            required
+            hasFeedback
+            validateStatus={errors.taiKhoan ? "error" : ""}
+            help={errors.taiKhoan?.message}
+          >
+            <Controller
+              control={control}
+              name="taiKhoan"
+              defaultValue={editUser?.taiKhoan ?? ""}
+              render={({ field }) => (
+                <Input {...field} className="w-full px-3  border rounded-md" placeholder="Nhập tài khoản" />
+              )}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Mật khẩu"
+            required
+            hasFeedback
+            validateStatus={errors.matKhau ? "error" : ""}
+            help={errors.matKhau?.message}
+          >
+            <Controller
+              control={control}
+              name="matKhau"
+              defaultValue={editUser?.matKhau ?? ""}
+              render={({ field }) => (
+                <Input.Password {...field} className="w-full px-3  border rounded-md" placeholder="Nhập mật khẩu" />
+              )}
+            />
+          </Form.Item>
 
-            <Form.Item
-              label="Đang chiếu"
-              valuePropName="checked"
-              validateStatus={errors.dangChieu ? "error" : ""}
-              help={errors.dangChieu?.message}
-            >
-              <Controller
-                control={control}
-                name="dangChieu"
-                defaultValue={editFilm?.dangChieu ?? false}
-                render={({ field }) => <Switch onChange={field.onChange} checked={field.value} />}
-              />
-            </Form.Item>
-            <Form.Item label="Sắp chiếu" valuePropName="checked">
-              <Controller
-                control={control}
-                name="sapChieu"
-                defaultValue={editFilm?.sapChieu ?? false}
-                render={({ field }) => <Switch onChange={field.onChange} checked={field.value} />}
-              />
-            </Form.Item>
-            <Form.Item label="Hot" valuePropName="checked">
-              <Controller
-                control={control}
-                name="hot"
-                defaultValue={editFilm?.hot ?? false}
-                render={({ field }) => <Switch onChange={field.onChange} checked={field.value} />}
-              />
-            </Form.Item>
-            <Form.Item label="★ Đánh giá">
-              <Controller
-                control={control}
-                name="danhGia"
-                defaultValue={editFilm?.danhGia ?? 1}
-                render={({ field }) => <InputNumber {...field} max={10} min={1} defaultValue={1} />}
-              />
-            </Form.Item>
+          <Form.Item
+            label="Email"
+            required
+            hasFeedback
+            validateStatus={errors.email ? "error" : ""}
+            help={errors.email?.message}
+          >
+            <Controller
+              control={control}
+              name="email"
+              defaultValue={editUser?.email ?? ""}
+              render={({ field }) => (
+                <Input className="w-full px-3  border rounded-md" placeholder="Nhập Email" {...field} />
+              )}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Số ĐT"
+            required
+            hasFeedback
+            validateStatus={errors.soDT ? "error" : ""}
+            help={errors.soDT?.message}
+          >
+            <Controller
+              control={control}
+              name="soDT"
+              defaultValue={editUser?.soDT ?? ""}
+              render={({ field }) => (
+                <Input className="w-full px-3  border rounded-md" placeholder="Số ĐT" {...field} />
+              )}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Họ Tên"
+            required
+            hasFeedback
+            validateStatus={errors.hoTen ? "error" : ""}
+            help={errors.hoTen?.message}
+          >
+            <Controller
+              control={control}
+              name="hoTen"
+              defaultValue={editUser?.hoTen ?? ""}
+              render={({ field }) => (
+                <Input className="w-full px-3 border rounded-md" placeholder="Họ tên" {...field} />
+              )}
+            />
+          </Form.Item>
 
-            <Form.Item
-              label="Hình phim"
-              hasFeedback
-              validateStatus={errors.hinhAnh ? "error" : isValid ? "success" : ""}
-              help={errors.hinhAnh?.message}
-              tooltip={"Dung lượng nhỏ hơn 1MB"}
+          <Form.Item
+            label="Role"
+            required
+            hasFeedback
+            validateStatus={errors.maLoaiNguoiDung ? "error" : ""}
+            help={errors.maLoaiNguoiDung?.message}
+          >
+            <Controller
+              control={control}
+              name="maLoaiNguoiDung"
+              defaultValue={editUser?.maLoaiNguoiDung ?? "KhachHang"}
+              render={({ field }) => (
+                <Select {...field}>
+                  {roles.length &&
+                    roles.map((role, index) => (
+                      <Select.Option key={index} value={role.maLoaiNguoiDung}>
+                        {role.tenLoai}
+                      </Select.Option>
+                    ))}
+                </Select>
+              )}
+            />
+          </Form.Item>
+
+          <div className="pt-5 mx-20">
+            <Button disabled={disableButton} type="primary" htmlType="submit" className="mx-5">
+              {editUser ? "Sửa user" : "Thêm user"}
+            </Button>
+            <Button
+              type="danger"
+              htmlType="button"
+              className="mx-5"
+              onClick={() => {
+                reset();
+                setDisableButton(false);
+              }}
             >
-              <div className="flex items-center">
-                <input
-                  name="hinhAnh"
-                  {...register("hinhAnh", {
-                    onChange: (e) => {
-                      clearErrors("hinhAnh");
-                      if (e.target.files.length !== 0) {
-                        // console.log(e.target.files);
-                        let uploadFile = e.target.files[0];
-                        let preview = URL.createObjectURL(uploadFile);
-                        setImgSrc(preview);
-                      } else {
-                        setImgSrc("");
-                      }
-                    },
-                  })}
-                  type="file"
-                  accept="image/*"
-                />
-                {imgSrc ? (
-                  <Button
-                    size="small"
-                    type="danger"
-                    onClick={() => {
-                      setImgSrc("");
-                      resetField("hinhAnh");
-                    }}
-                  >
-                    Xóa
-                  </Button>
-                ) : (
-                  <></>
-                )}
-              </div>
-            </Form.Item>
+              Nhập lại
+            </Button>
           </div>
-          <div className="w-1/3 px-10">
-            {editFilm?.hinhAnh ?? imgSrc ? (
-              <div>
-                <p>Hình phim</p>
-                <img src={imgSrc} alt="hinh-phim" className="w-full h-80" />
-              </div>
-            ) : (
-              <></>
-            )}
-          </div>
-        </div>
-
-        <Form.Item className="mx-20 mt-5">
-          <Button type="primary" htmlType="submit">
-            {editFilm ? "Cập nhật" : "Thêm phim"}
-          </Button>
-        </Form.Item>
-      </Form>
-    </>
+        </Form>
+      </div>
+    </div>
   );
 };
 
