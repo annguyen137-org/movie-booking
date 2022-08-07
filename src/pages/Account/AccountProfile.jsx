@@ -298,12 +298,19 @@ const AccountProfile = () => {
                           defaultValue={accountInfo.maLoaiNguoiDung}
                           render={({ field }) => (
                             <Select defaultValue={accountInfo.maLoaiNguoiDung} {...field} placeholder="Loại người dùng">
-                              {roleState.length &&
-                                roleState.map((role, index) => (
-                                  <Select.Option key={index} value={role.maLoaiNguoiDung}>
-                                    {role.tenLoai}
+                              {roleState.length && (
+                                <>
+                                  <Select.Option value={roleState[0].maLoaiNguoiDung}>
+                                    {roleState[0].tenLoai}
                                   </Select.Option>
-                                ))}
+                                  <Select.Option
+                                    value={roleState[1].maLoaiNguoiDung}
+                                    disabled={accountInfo.maLoaiNguoiDung !== "QuanTri"}
+                                  >
+                                    {roleState[1].tenLoai}
+                                  </Select.Option>
+                                </>
+                              )}
                             </Select>
                           )}
                         />
