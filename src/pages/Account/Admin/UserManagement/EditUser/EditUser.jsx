@@ -15,7 +15,7 @@ const EditUser = () => {
   const { accountName } = useParams();
 
   const location = useLocation();
-  // console.log(location);
+  console.log(location);
 
   useEffect(() => {
     dispatch(fetchEditUserData(accountName));
