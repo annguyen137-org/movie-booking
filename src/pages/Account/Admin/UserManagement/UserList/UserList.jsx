@@ -37,7 +37,8 @@ const UserList = () => {
       notification["info"]({ message: "Xóa user thành công", duration: 1.5 });
       dispatch(resetAdminActionStatus());
       dispatch(getUserList());
-    } else if (actionSuccess === false && typeof actionResponeAPI === "string") {
+    }
+    if (actionSuccess === false) {
       notification["error"]({ message: "Xóa user không thành công", duration: 1.5, description: error });
       dispatch(resetAdminActionStatus());
       dispatch(getUserList());

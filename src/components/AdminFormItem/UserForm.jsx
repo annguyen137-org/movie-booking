@@ -133,7 +133,13 @@ const UserForm = ({ editUser }) => {
               name="taiKhoan"
               defaultValue={editUser?.taiKhoan ?? ""}
               render={({ field }) => (
-                <Input {...field} className="w-full px-3  border rounded-md" placeholder="Nhập tài khoản" />
+                <Input
+                  disabled={editUser ? true : false}
+                  title={editUser ? "Tài khoản không được thay đổi" : null}
+                  {...field}
+                  className="w-full px-3  border rounded-md"
+                  placeholder="Nhập tài khoản"
+                />
               )}
             />
           </Form.Item>
