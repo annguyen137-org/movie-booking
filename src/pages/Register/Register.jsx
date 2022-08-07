@@ -7,10 +7,14 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import { resetRegisterStatus } from "redux/slices/authSlice";
+import { GROUPID } from "services/axiosClient";
+import PageLoading from "components/Loading/PageLoading";
 
 const Register = () => {
   // window.scrollTo(0, 0);
   const [disableButton, setDisableButton] = useState(false);
+
+  const [fakeLoading, setFakeLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,7 +71,16 @@ const Register = () => {
   });
 
   const onSubmit = (values) => {
-    dispatch(register(values));
+    const { taiKhoan, matKhau, email, soDt, hoTen } = values;
+    const registerValues = {
+      taiKhoan,
+      matKhau,
+      email,
+      soDt,
+      hoTen,
+      maNhom: GROUPID,
+    };
+    dispatch(register(registerValues));
     setDisableButton(false);
   };
 
@@ -75,14 +88,23 @@ const Register = () => {
     setDisableButton(true);
 
     if (errors) {
-      notification["error"]({ message: "Trường thông tin rỗng", description: "Vui lòng kiểm tra và nhập lại các trường thông tin" });
+      notification["error"]({
+        message: "Trường thông tin rỗng",
+        description: "Vui lòng kiểm tra và nhập lại các trường thông tin",
+      });
     }
   };
 
   useEffect(() => {
     if (isRegisterSuccess) {
-      notification["success"]({ message: "Đăng ký thành công", description: "Chuyển về trang đăng nhập sau 3s" });
+      notification["success"]({
+        message: "Đăng ký thành công",
+        description: "Chuyển về trang đăng nhập sau 3s",
+        duration: 1.5,
+      });
+      setFakeLoading(true);
       setTimeout(() => {
+        setFakeLoading(false);
         navigate("/login");
       }, 3000);
       reset({ keepDefaultValues: true });
@@ -102,9 +124,13 @@ const Register = () => {
     return <Navigate to="/" replace />;
   }
 
+  if (fakeLoading) {
+    return <PageLoading />;
+  }
+
   return (
     <div className="bg-slate-300 min-h-full">
-      <div className="w-full mx-auto md:w-2/3 lg:w-1/3">
+      <div className="w-full py-2 md:py-5 px-5 mx-auto md:w-2/3 lg:w-1/3">
         <div className="flex flex-col px-10 rounded-md bg-white dark:text-gray-100">
           <div className="text-center">
             <h1 className="my-3 text-4xl font-bold">Đăng ký</h1>
@@ -121,15 +147,27 @@ const Register = () => {
               <Controller
                 control={control}
                 name="taiKhoan"
-                render={({ field }) => <Input {...field} className="w-full px-3 py-2 border rounded-md" placeholder="Nhập tài khoản" />}
+                render={({ field }) => (
+                  <Input {...field} className="w-full px-3 py-2 border rounded-md" placeholder="Nhập tài khoản" />
+                )}
               />
             </Form.Item>
-            <Form.Item label="Mật khẩu" required hasFeedback validateStatus={errors.matKhau ? "error" : ""} help={errors.matKhau?.message}>
+            <Form.Item
+              label="Mật khẩu"
+              required
+              hasFeedback
+              validateStatus={errors.matKhau ? "error" : ""}
+              help={errors.matKhau?.message}
+            >
               <Controller
                 control={control}
                 name="matKhau"
                 render={({ field }) => (
-                  <Input.Password {...field} className="w-full px-3 py-2 border rounded-md" placeholder="Nhập mật khẩu" />
+                  <Input.Password
+                    {...field}
+                    className="w-full px-3 py-2 border rounded-md"
+                    placeholder="Nhập mật khẩu"
+                  />
                 )}
               />
             </Form.Item>
@@ -144,7 +182,11 @@ const Register = () => {
                 control={control}
                 name="confirmPassword"
                 render={({ field }) => (
-                  <Input.Password className="w-full px-3 py-2 border rounded-md" placeholder="Nhập lại password" {...field} />
+                  <Input.Password
+                    className="w-full px-3 py-2 border rounded-md"
+                    placeholder="Nhập lại password"
+                    {...field}
+                  />
                 )}
               />
             </Form.Item>
@@ -170,18 +212,34 @@ const Register = () => {
                 )}
               />
             </Form.Item>
-            <Form.Item label="Số ĐT" required hasFeedback validateStatus={errors.soDt ? "error" : ""} help={errors.soDt?.message}>
+            <Form.Item
+              label="Số ĐT"
+              required
+              hasFeedback
+              validateStatus={errors.soDt ? "error" : ""}
+              help={errors.soDt?.message}
+            >
               <Controller
                 control={control}
                 name="soDt"
-                render={({ field }) => <Input className="w-full px-3 py-2 border rounded-md" placeholder="Số ĐT" {...field} />}
+                render={({ field }) => (
+                  <Input className="w-full px-3 py-2 border rounded-md" placeholder="Số ĐT" {...field} />
+                )}
               />
             </Form.Item>
-            <Form.Item label="Họ Tên" required hasFeedback validateStatus={errors.hoTen ? "error" : ""} help={errors.hoTen?.message}>
+            <Form.Item
+              label="Họ Tên"
+              required
+              hasFeedback
+              validateStatus={errors.hoTen ? "error" : ""}
+              help={errors.hoTen?.message}
+            >
               <Controller
                 control={control}
                 name="hoTen"
-                render={({ field }) => <Input className="w-full px-3 py-2 border rounded-md" placeholder="Họ tên" {...field} />}
+                render={({ field }) => (
+                  <Input className="w-full px-3 py-2 border rounded-md" placeholder="Họ tên" {...field} />
+                )}
               />
             </Form.Item>
             <Form.Item required hasFeedback>
@@ -189,7 +247,13 @@ const Register = () => {
                 control={control}
                 name="acceptTerms"
                 render={({ field: { name, onChange, ref, value } }) => (
-                  <Checkbox name={name} onChange={(e) => onChange(e.target.checked)} checked={value} ref={ref} className="mt-3">
+                  <Checkbox
+                    name={name}
+                    onChange={(e) => onChange(e.target.checked)}
+                    checked={value}
+                    ref={ref}
+                    className="mt-3"
+                  >
                     <p className={errors.acceptTerms && "text-red-500"}>Chấp nhận các điều khoản</p>
                   </Checkbox>
                 )}
@@ -201,7 +265,7 @@ const Register = () => {
               </div>
             )}
 
-            <div className="pt-5">
+            <div>
               <Button
                 disabled={disableButton}
                 htmlType="submit"

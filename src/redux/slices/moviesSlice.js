@@ -49,9 +49,9 @@ export const getMovieBanner = createAsyncThunk("movies/getMovieBanner", async ()
   }
 });
 
-export const getMovieDetail = createAsyncThunk("movies/getMovieShowtimes", async (movieId) => {
+export const getMovieDetail = createAsyncThunk("movies/getMovieDetail", async (movieId) => {
   try {
-    const data = await movieAPI.getMovieShowtimes(movieId);
+    const data = await movieAPI.getMovieDetail(movieId);
     return data;
   } catch (error) {
     throw error;

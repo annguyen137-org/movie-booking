@@ -15,7 +15,7 @@ const TheaterTabs = () => {
   return (
     theatersBrandWithShowtime && (
       <div className={`hidden lg:block container mx-auto text-center px-5 md:px-10 lg:px-40 py-10 `} ref={theatersRef}>
-        <div className={`border border-slate-300`}>
+        <div className={`border border-slate-300 bg-white`}>
           <Tabs tabPosition="left" tabBarStyle={{ height: "500px", overflow: "hidden" }}>
             {theatersBrandWithShowtime.map((brand) => {
               return (

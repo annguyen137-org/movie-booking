@@ -29,16 +29,26 @@ const SeatItem = ({ seat }) => {
     <div className="rounded-md overflow-hidden">
       <Button
         title={
-          seat.daDat ? `Vé ${seat.tenGhe} đã được đặt` : `Click để đặt ghế ${seat.loaiGhe === "Vip" ? "vip" : "thường"} ${seat.tenGhe}`
+          seat.daDat
+            ? `Vé ${seat.tenGhe} đã được đặt`
+            : `Click để đặt ghế ${seat.loaiGhe === "Vip" ? "vip" : "thường"} ${seat.tenGhe}`
         }
         size="large"
-        className={`flex justify-center items-center w-full text-black hover:text-black rounded-md overflow-hidden border-slate-900 hover:${
+        className={`flex justify-center items-center w-2/3 lg:w-full m-0 text-black hover:text-black rounded-md overflow-hidden border-slate-900 hover:${
           seat.daDat ? "" : "bg-white"
-        } ${seat.daDat ? "bg-red-600" : isSelected ? "bg-green-600" : seat.loaiGhe === "Vip" ? "bg-orange-400" : "bg-slate-300"}`}
+        } ${
+          seat.daDat
+            ? "bg-red-600"
+            : isSelected
+            ? "bg-green-600"
+            : seat.loaiGhe === "Vip"
+            ? "bg-orange-400"
+            : "bg-slate-300"
+        }`}
         disabled={seat.daDat}
         onClick={() => handleSelectTicket(seat)}
       >
-        {seat.daDat ? "X" : seat.tenGhe}
+        {seat.tenGhe}
       </Button>
     </div>
   );

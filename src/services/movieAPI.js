@@ -27,8 +27,8 @@ const movieAPI = {
     });
   },
 
-  getMovieShowtimes: (movieId) => {
-    return axiosClient.get("QuanLyRap/LayThongTinLichChieuPhim", {
+  getMovieDetail: (movieId) => {
+    return axiosClient.get("QuanLyPhim/LayThongTinPhim", {
       params: {
         maPhim: movieId,
       },

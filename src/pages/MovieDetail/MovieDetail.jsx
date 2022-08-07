@@ -1,10 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import PageLoading from "components/Loading/PageLoading";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
-
+import { useParams, useNavigate, Link, NavLink } from "react-router-dom";
 import { Button, Tabs, Collapse, Rate } from "antd";
 import { getMovieDetail } from "redux/slices/moviesSlice";
+import { PlayCircleFilled } from "@ant-design/icons";
+import PopupModal from "components/Modal/PopupModal";
+import useModalHook from "utils/useModalHook";
+import { getShowtimesByMovieId } from "redux/slices/theatersSlice";
 
 const MovieDetail = () => {
   window.scrollTo(0, 0);
@@ -18,8 +21,15 @@ const MovieDetail = () => {
     return state.movies;
   });
 
+  const { showtimesById } = useSelector((state) => {
+    return state.theaters;
+  });
+
+  const { visible, closeModal, showModal } = useModalHook();
+
   useEffect(() => {
     dispatch(getMovieDetail(movieId));
+    dispatch(getShowtimesByMovieId(movieId));
   }, []);
 
   if (isDetailLoading) {
@@ -35,6 +45,11 @@ const MovieDetail = () => {
             {movieDetail.hot && (
               <span className="text-white bg-red-600 text-sm mx-2 p-1 absolute top-5 left-5 animate-bounce">HOT</span>
             )}
+            <PlayCircleFilled
+              title="Nhấn xem trailer"
+              className="absolute top-1/2 left-1/2 text-3xl md:text-6xl text-slate-300 hover:scale-125 hover:text-orange-600 transition-all hover:cursor-pointer -translate-x-1/2 -translate-y-1/2"
+              onClick={() => showModal(!visible)}
+            />
           </div>
 
           <div className="md:w-1/2 lg:w-3/5 text-left p-5">
@@ -83,7 +98,7 @@ const MovieDetail = () => {
             }
             className="bg-white rounded-sm border border-slate-400"
           >
-            {(movieDetail.heThongRapChieu ?? []).map((brand) => {
+            {(showtimesById.heThongRapChieu ?? []).map((brand) => {
               return (
                 <Tabs.TabPane
                   tab={
@@ -104,22 +119,23 @@ const MovieDetail = () => {
                           <div className="flex flex-wrap">
                             {theater.lichChieuPhim.map((showtime) => {
                               return (
-                                <div
-                                  key={showtime.maLichChieu}
-                                  className="mb-3 mx-2 p-1 bg-slate-300 rounded-md hover:bg-orange-500 hover:cursor-pointer"
-                                  onClick={() => {
-                                    navigate(`/purchase/${showtime.maLichChieu}`);
-                                  }}
-                                >
-                                  <p className="m-0">
-                                    <span className="font-bold">
-                                      {[...showtime.ngayChieuGioChieu.split("T")[0].split("-")].reverse().join("-")}
-                                    </span>
-                                  </p>
-                                  <p className="m-0 font-bold text-green-700">
-                                    {showtime.ngayChieuGioChieu.split("T")[1].slice(0, 5)}
-                                  </p>
-                                </div>
+                                <Link to={`/purchase/${showtime.maLichChieu}`} key={showtime.maLichChieu}>
+                                  <div
+                                    className="mb-3 mx-2 p-1 bg-slate-300 rounded-md hover:bg-orange-500 hover:cursor-pointer"
+                                    // onClick={() => {
+                                    //   navigate(`/purchase/${showtime.maLichChieu}`);
+                                    // }}
+                                  >
+                                    <p className="m-0 text-black">
+                                      <span className="font-bold">
+                                        {[...showtime.ngayChieuGioChieu.split("T")[0].split("-")].reverse().join("-")}
+                                      </span>
+                                    </p>
+                                    <p className="m-0 font-bold text-green-700">
+                                      {showtime.ngayChieuGioChieu.split("T")[1].slice(0, 5)}
+                                    </p>
+                                  </div>
+                                </Link>
                               );
                             })}
                           </div>
@@ -133,6 +149,28 @@ const MovieDetail = () => {
           </Tabs>
         </div>
       </div>
+
+      <PopupModal
+        visible={visible}
+        onCancel={closeModal}
+        className={"w-1/2 h-1/2 md:h-2/3"}
+        closeIcon={<></>}
+        bodyStyle={{ padding: "0px", height: "100%" }}
+      >
+        {
+          <iframe
+            src={
+              movieDetail.trailer?.includes("embed")
+                ? movieDetail.trailer
+                : `https://www.youtube.com/embed/${movieDetail.trailer?.split("=")[1]}`
+            }
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen={true}
+            className="w-full h-full"
+          />
+        }
+      </PopupModal>
     </div>
   );
 };

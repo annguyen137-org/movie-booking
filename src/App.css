@@ -1,5 +1,22 @@
 @import "~antd/dist/antd.css";
 
+::-webkit-scrollbar {
+  width: 10px;
+  border: 1px solid #d5d5d5;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  overflow: hidden;
+  background: #eeeeee;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #b0b0b0;
+  cursor: pointer;
+}
+
 .ant-table-thead .ant-table-cell {
   background-color: rgb(207, 204, 204);
   border-top: 1px solid rgba(0, 0, 0, 0.5) !important;
@@ -14,4 +31,8 @@
 .ant-table-thead .ant-table-cell:last-child,
 .ant-table-tbody .ant-table-row td:last-child {
   border-right: 1px solid rgba(0, 0, 0, 0.5) !important;
+}
+
+.ant-modal-content {
+  height: 100% !important;
 }
