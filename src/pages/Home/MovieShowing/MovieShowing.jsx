@@ -11,7 +11,7 @@ const MovieShowing = () => {
 
   const {
     data,
-    moviesPagination: { currentPage, items, totalCount },
+    moviesPagination: { currentPage, count, items, totalCount },
     isMoviesLoading,
     error,
   } = useSelector((state) => {
@@ -20,6 +20,7 @@ const MovieShowing = () => {
 
   const handleChangePage = (page) => {
     dispatch(getMovieListPagination(page));
+    moviesRef.current.scrollIntoView({ block: "center", behavior: "smooth" });
   };
 
   return (
@@ -32,7 +33,14 @@ const MovieShowing = () => {
       </div>
 
       <div className="mt-5">
-        <Pagination current={currentPage} defaultCurrent={1} total={totalCount} onChange={handleChangePage} />
+        <Pagination
+          responsive={true}
+          pageSize={8}
+          showSizeChanger={false}
+          current={currentPage}
+          total={totalCount}
+          onChange={handleChangePage}
+        />
       </div>
     </div>
   );

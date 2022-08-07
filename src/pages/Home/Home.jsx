@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Banner from "./Banner/Banner";
 import MovieShowing from "./MovieShowing/MovieShowing";
 import TheaterTabs from "./TheaterTabs/TheaterTabs";
-
-import { getTheatersBrand } from "redux/slices/theatersSlice";
+import { getTheatersBrandWithShowtime } from "redux/slices/theatersSlice";
 import { getMovieList, getMovieListPagination } from "redux/slices/moviesSlice";
 import { getMovieBanner } from "redux/slices/moviesSlice";
 import PageLoading from "components/Loading/PageLoading";
@@ -22,7 +21,7 @@ const Home = () => {
   useEffect(() => {
     dispatch(getMovieBanner());
     dispatch(getMovieListPagination(1));
-    dispatch(getTheatersBrand());
+    dispatch(getTheatersBrandWithShowtime());
     setShowLoading(true);
   }, []);
 

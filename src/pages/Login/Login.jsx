@@ -1,6 +1,6 @@
-import React from "react";
-import { Button, Input, Form, Checkbox } from "antd";
-import { NavLink, Navigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Button, Input, Form, Checkbox, notification } from "antd";
+import { NavLink, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,8 +12,9 @@ const Login = () => {
   window.scrollTo({ top: 0 });
 
   const distpach = useDispatch();
+  const navigate = useNavigate();
 
-  const { currentUser, isLogInSuccess, error, isLoginLoading } = useSelector((state) => {
+  const { currentUser, isLoggedIn, error, isLoginLoading } = useSelector((state) => {
     return state.auth;
   });
 
@@ -36,10 +37,26 @@ const Login = () => {
     distpach(login(values));
   };
 
-  if (Object.keys(currentUser).length) {
-    // Redirect user về trang Home
-    return <Navigate to="/" replace />;
-  }
+  useEffect(() => {
+    if (isLoggedIn) {
+      notification["success"]({
+        message: "Đăng nhập thành công",
+        description: location?.state ? "Chuyển về trang đặt vé" : "Chuyển về trang chủ",
+        duration: 1,
+      });
+
+      setTimeout(() => {
+        navigate(location.state?.from ?? "/", { replace: true });
+      }, 1000);
+    }
+  }, [isLoggedIn]);
+
+  const location = useLocation();
+
+  // if (Object.keys(currentUser).length) {
+  //   // Redirect user về trang Home
+  //   return <Navigate to={location.state?.from ?? "/"} replace />;
+  // }
 
   return (
     <div className="bg-slate-300 min-h-full">
@@ -50,7 +67,12 @@ const Login = () => {
             <p className="text-sm dark:text-gray-400">Đăng nhập để truy cập tài khoản của bạn</p>
           </div>
           <Form autoComplete="off" onFinish={handleSubmit(onSubmit)} layout="vertical">
-            <Form.Item label="Tài khoản" required validateStatus={errors.taiKhoan ? "error" : ""} help={errors.taiKhoan?.message}>
+            <Form.Item
+              label="Tài khoản"
+              required
+              validateStatus={errors.taiKhoan ? "error" : ""}
+              help={errors.taiKhoan?.message}
+            >
               <Controller
                 control={control}
                 name="taiKhoan"
@@ -67,7 +89,12 @@ const Login = () => {
                 )}
               />
             </Form.Item>
-            <Form.Item label="Mật khẩu" required validateStatus={errors.matKhau ? "error" : ""} help={errors.matKhau?.message}>
+            <Form.Item
+              label="Mật khẩu"
+              required
+              validateStatus={errors.matKhau ? "error" : ""}
+              help={errors.matKhau?.message}
+            >
               <Controller
                 control={control}
                 name="matKhau"

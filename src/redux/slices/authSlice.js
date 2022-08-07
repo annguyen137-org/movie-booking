@@ -4,7 +4,7 @@ import authAPI from "services/authAPI";
 const initialState = {
   currentUser: JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user")) || {},
   isLoginLoading: false,
-  isLogInSuccess: false,
+  isLoggedIn: false,
   isRegisterLoading: false,
   isRegisterSuccess: false,
   error: "",
