@@ -63,23 +63,23 @@ const Purchase = () => {
     return <PageLoading />;
   }
   return (
-    <div className="container mx-auto my-2 w-full">
+    <div className="lg:container mx-auto my-2 w-full">
       <div className="flex flex-col lg:flex-row w-full">
-        <div className="w-full lg:w-4/5 mx-2">
+        <div className="w-full lg:w-4/5 lg:mx-2">
           <div className="text-center bg-slate-500 text-gray-200 shadow-2xl mb-5 p-2">SCREEN</div>
           <p className="m-1">16 ghế trên 1 hàng</p>
-          <div className="w-full grid grid-cols-8 lg:grid-cols-16 gap-1 lg:gap-2">
+          <div className="w-full grid grid-cols-8 md:grid-cols-16 md:mx-1 gap-1 lg:gap-2">
             {(ticketsData.danhSachGhe ?? []).map((seat) => {
               return <SeatItem key={seat.maGhe} seat={seat} />;
             })}
           </div>
           <div className="flex justify-around mt-5 shadow-lg">
             <div className="text-center">
-              <p className="bg-red-600 px-5 py-2 border border-black my-2 rounded-md">X</p>
+              <p className="bg-red-600 px-5 py-2 border border-black my-2 rounded-md">...</p>
               <p>Đã đặt</p>
             </div>
             <div className="text-center">
-              <p className="bg-orange-600 px-5 py-2 border border-black my-2 rounded-md">...</p>
+              <p className="bg-orange-400 px-5 py-2 border border-black my-2 rounded-md">...</p>
               <p>Ghế vip</p>
             </div>
             <div className="text-center">
@@ -92,7 +92,7 @@ const Purchase = () => {
             </div>
           </div>
         </div>
-        <div className="w-full lg:w-1/5 mx-1 mt-3 lg:mt-0">
+        <div className="w-full lg:w-1/5 lg:mx-1 mt-3 lg:mt-0">
           <div className="text-center border border-slate-400 shadow-lg bg-white px-2">
             <p className="text-xl border-b font-bold">Thông tin vé</p>
             <p className="text-2xl text-green-500 font-extrabold bg-orange-200 rounded-md">

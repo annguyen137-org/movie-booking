@@ -59,9 +59,9 @@ const Login = () => {
   // }
 
   return (
-    <div className="bg-slate-300 min-h-full">
-      <div className="w-full mx-auto md:w-2/3 lg:w-1/3">
-        <div className="flex flex-col px-10 rounded-md bg-white dark:text-gray-100">
+    <div className="min-h-full">
+      <div className="w-full mx-auto px-5 py-10 md:w-2/3 lg:w-1/3">
+        <div className="flex flex-col px-10 rounded-md bg-white dark:text-gray-100 border border-slate-300">
           <div className="text-center">
             <h1 className="my-3 text-4xl font-bold">Đăng nhập</h1>
             <p className="text-sm dark:text-gray-400">Đăng nhập để truy cập tài khoản của bạn</p>
