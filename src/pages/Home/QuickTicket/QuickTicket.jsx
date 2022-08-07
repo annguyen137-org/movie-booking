@@ -102,7 +102,7 @@ const QuickTicket = () => {
               {currentBranch.lichChieuPhim?.length &&
                 currentBranch.lichChieuPhim?.map((showtime) => (
                   <Select.Option key={showtime.maLichChieu} value={showtime.maLichChieu} className="font-bold">
-                    {showtime.ngayChieuGioChieu}
+                    {moment(showtime.ngayChieuGioChieu).format("DD/MM/YYYY - HH:ss")}
                   </Select.Option>
                 ))}
             </Select>
