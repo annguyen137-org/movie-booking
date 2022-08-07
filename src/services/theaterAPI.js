@@ -16,6 +16,10 @@ const theaterAPI = {
   getTheaterBranchByBrand: (brandId) => {
     return axiosClient.get("QuanLyRap/LayThongTinCumRapTheoHeThong", { params: { maHeThongRap: brandId } });
   },
+
+  getShowtimesByMovieId: (movieId) => {
+    return axiosClient.get("QuanLyRap/LayThongTinLichChieuPhim", { params: { maPhim: movieId } });
+  },
 };
 
 export default theaterAPI;

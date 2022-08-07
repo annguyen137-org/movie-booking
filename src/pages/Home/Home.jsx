@@ -4,9 +4,11 @@ import Banner from "./Banner/Banner";
 import MovieShowing from "./MovieShowing/MovieShowing";
 import TheaterTabs from "./TheaterTabs/TheaterTabs";
 import { getTheatersBrandWithShowtime } from "redux/slices/theatersSlice";
-import { getMovieList, getMovieListPagination } from "redux/slices/moviesSlice";
+import { getMovieListPagination } from "redux/slices/moviesSlice";
 import { getMovieBanner } from "redux/slices/moviesSlice";
 import PageLoading from "components/Loading/PageLoading";
+import QuickTicket from "./QuickTicket/QuickTicket";
+import AppInfo from "./AppInfo/AppInfo";
 
 const Home = () => {
   window.scrollTo(0, 0);
@@ -36,8 +38,10 @@ const Home = () => {
   return (
     <>
       <Banner />
+      <QuickTicket />
       <MovieShowing />
       <TheaterTabs />
+      <AppInfo />
     </>
   );
 };

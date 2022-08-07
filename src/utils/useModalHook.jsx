@@ -4,11 +4,11 @@ const useModalHook = () => {
   const [visible, setVisible] = useState(false);
 
   const showModal = () => {
-    setVisible(!visible);
+    setVisible(true);
   };
 
   const closeModal = () => {
-    setVisible(!visible);
+    setVisible(false);
   };
 
   return { visible, showModal, closeModal };
