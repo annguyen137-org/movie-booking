@@ -1,6 +1,6 @@
 # LIVE HOST DOMAIN:
 
-### `https://movie-booking-indol.vercel.app/`
+### `https://cybersoft-movie-booking.vercel.app/`
 
 # DEMO VIDEO (YOUTUBE):
 
