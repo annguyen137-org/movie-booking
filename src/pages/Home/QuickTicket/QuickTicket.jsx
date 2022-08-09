@@ -7,9 +7,7 @@ import movieAPI from "services/movieAPI";
 import theaterAPI from "services/theaterAPI";
 
 const QuickTicket = () => {
-  // USE REACT STATE FOR PREVENTING RE-RENDER
-  // IF USING REDUX, WHEN SELECT MOVIE => DISPATCH ACTION => REDUX STATE CHANGE => COMPONENT WILL RE-RENDER
-
+  
   const navigate = useNavigate();
 
   const [currentBranch, setCurrentBranch] = useState({});
