@@ -38,7 +38,7 @@ const Banner = () => {
       <PopupModal
         visible={visible}
         onCancel={closeModal}
-        className={"w-full h-1/3 md:h-2/5 lg:w-5/6 lg:h-2/3 "}
+        className={"w-11/12 h-1/3 md:h-3/6 lg:w-10/12 lg:h-4/6 2xl:h-5/6 2xl:w-8/12"}
         closeIcon={<></>}
         bodyStyle={{ padding: "0px", height: "100%" }}
       >
