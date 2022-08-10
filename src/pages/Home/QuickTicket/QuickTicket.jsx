@@ -51,6 +51,7 @@ const QuickTicket = () => {
               className="w-full border-2 border-slate-400 rounded-md lg:rounded-l-md"
               defaultValue={"Phim"}
               showSearch
+              filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
               size={window.innerWidth > 1024 ? "large" : "middle"}
               onSelect={handleSelectMovie}
             >
