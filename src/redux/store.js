@@ -15,6 +15,7 @@ const store = configureStore({
     account: account,
     admin: admin,
   },
+  devTools: process.env.NODE_ENV !== "production",
 });
 
 export default store;
