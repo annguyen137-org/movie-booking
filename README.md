@@ -1,10 +1,10 @@
-# LIVE HOST DOMAIN:
+# LIVE HOST DOMAIN: https://cybersoft-movie-booking.vercel.app
 
-### `https://cybersoft-movie-booking.vercel.app/`
+[Domain](https://cybersoft-movie-booking.vercel.app/)
 
-# DEMO VIDEO (YOUTUBE):
+# DEMO VIDEO: https://www.youtube.com/watch?v=nO1H92HLoXI
 
-### `https://www.youtube.com/watch?v=nO1H92HLoXI`
+[Youtube](https://www.youtube.com/watch?v=nO1H92HLoXI)
 
 # Getting Started with Create React App
 
