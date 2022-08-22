@@ -37,8 +37,17 @@ const MovieDetail = () => {
   }
 
   return (
-    <div className="movie-detail bg-slate-300">
-      <div className="container mx-auto h-full w-full text-center px-5 lg:py-10 md:px-10 lg:px-20 2xl:px-40 grow">
+    <div
+      className={`text-gray-100`}
+      style={{
+        background: `url(${movieDetail.hinhAnh})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <div className="container mx-auto h-full w-full text-center px-5 lg:py-10 md:px-10 lg:px-20 2xl:px-40 grow backdrop-blur-md">
         <div className="flex flex-col md:flex-row w-full h-full">
           <div className="md:w-1/2 lg:w-2/5 h-96 p-5 relative">
             <img src={movieDetail.hinhAnh} className="w-full h-full" alt={movieDetail.tenPhim} />
@@ -53,20 +62,26 @@ const MovieDetail = () => {
           </div>
 
           <div className="md:w-1/2 lg:w-3/5 text-left p-5">
-            <p className="lg:text-4xl font-extrabold space-x-2">{movieDetail.tenPhim}</p>
+            <p className="text-2xl lg:text-4xl font-extrabold space-x-2">{movieDetail.tenPhim}</p>
             <p className="lg:text-lg">
               Ngày khởi chiếu:
-              <span className="p-1 rounded-md bg-orange-600 font-bold">
+              <span className="p-1 ml-1 rounded-md bg-orange-600 font-bold">
                 {movieDetail.ngayKhoiChieu && movieDetail.ngayKhoiChieu.split("T")[0].split("-").reverse().join("-")}
               </span>
             </p>
-            <div className="lg:mb-10">
+            <div className="lg:mb-10 ">
               {window.innerWidth >= 768 ? (
                 <p>{movieDetail.moTa}</p>
               ) : (
                 <Collapse ghost>
-                  <Collapse.Panel header="Xem chi tiết">
-                    <p>{movieDetail.moTa}</p>
+                  <Collapse.Panel
+                    header={
+                      <span className="text-gray-100 animate__animated animate__pulse animate__infinite">
+                        Xem chi tiết mô tả phim
+                      </span>
+                    }
+                  >
+                    <p className="text-gray-100">{movieDetail.moTa}</p>
                   </Collapse.Panel>
                 </Collapse>
               )}
@@ -93,14 +108,15 @@ const MovieDetail = () => {
             tabPosition={window.innerWidth >= 768 ? "left" : "top"}
             tabBarStyle={
               window.innerWidth >= 768
-                ? { height: "500px", overflow: "hidden", borderRight: "1px solid rgb(203 213 225)" }
+                ? { height: "500px", overflow: "hidden", borderRight: "1px solid rgba(0,0,0,0.3)" }
                 : { padding: "10px" }
             }
-            className="bg-white rounded-sm border border-slate-400"
+            className="bg-slate-300 rounded-sm border border-slate-300"
           >
             {(showtimesById.heThongRapChieu ?? []).map((brand) => {
               return (
                 <Tabs.TabPane
+                  // className="bg-slate-300"
                   tab={
                     <div>
                       <img src={brand.logo} width={40} height={40} alt={brand.tenHeThongRap} />
@@ -121,12 +137,12 @@ const MovieDetail = () => {
                               return (
                                 <Link to={`/purchase/${showtime.maLichChieu}`} key={showtime.maLichChieu}>
                                   <div
-                                    className="mb-3 mx-2 p-1 bg-slate-300 rounded-md hover:bg-orange-500 hover:cursor-pointer"
+                                    className="mb-3 mx-2 p-1 bg-slate-400 rounded-md border border-slate-400 text-black hover:bg-orange-500 hover:border-orange-500 hover:cursor-pointer hover:text-black"
                                     // onClick={() => {
                                     //   navigate(`/purchase/${showtime.maLichChieu}`);
                                     // }}
                                   >
-                                    <p className="m-0 text-black">
+                                    <p className="m-0 ">
                                       <span className="font-bold">
                                         {[...showtime.ngayChieuGioChieu.split("T")[0].split("-")].reverse().join("-")}
                                       </span>
@@ -153,7 +169,7 @@ const MovieDetail = () => {
       <PopupModal
         visible={visible}
         onCancel={closeModal}
-        className={"w-1/2 h-1/2 md:h-2/3"}
+        className={"w-11/12 h-1/2 md:h-2/3"}
         closeIcon={<></>}
         bodyStyle={{ padding: "0px", height: "100%" }}
       >

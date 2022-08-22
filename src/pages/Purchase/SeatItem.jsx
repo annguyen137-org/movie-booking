@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCouch } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { selectSeat } from "redux/slices/ticketsSlice";
 
@@ -34,7 +36,7 @@ const SeatItem = ({ seat }) => {
             : `Click để đặt ghế ${seat.loaiGhe === "Vip" ? "vip" : "thường"} ${seat.tenGhe}`
         }
         size="large"
-        className={`flex justify-center items-center w-2/3 lg:w-full m-0 text-black hover:text-black rounded-md overflow-hidden border-slate-900 hover:${
+        className={`w-2/3 lg:w-full h-full text-center m-0 p-0 text-black hover:text-black rounded-md overflow-hidden border-slate-900 hover:${
           seat.daDat ? "" : "bg-white"
         } ${
           seat.daDat
@@ -48,7 +50,10 @@ const SeatItem = ({ seat }) => {
         disabled={seat.daDat}
         onClick={() => handleSelectTicket(seat)}
       >
-        {seat.tenGhe}
+        <div>
+          <FontAwesomeIcon icon={faCouch} />
+          <p className="m-0 font-bold">{seat.tenGhe}</p>
+        </div>
       </Button>
     </div>
   );
