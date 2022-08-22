@@ -11,7 +11,9 @@ const Footer = () => {
             <div className="w-2/6">
               <h1 className="text-gray-100 text-lg">TIX</h1>
               <ul className="grid grid-cols-2 gap-2">
-                <li className="text-xs text-slate-400 hover:cursor-pointer hover:text-gray-100 transition-all duration-300">FAQ</li>
+                <li className="text-xs text-slate-400 hover:cursor-pointer hover:text-gray-100 transition-all duration-300">
+                  FAQ
+                </li>
                 <li className="text-xs text-slate-400 hover:cursor-pointer hover:text-gray-100 transition-all duration-300">
                   Thỏa thuận sử dụng
                 </li>
@@ -87,7 +89,8 @@ const Footer = () => {
                   </p>
                   <p className="text-gray-100 m-0 leading-5">Giấy chứng nhận đăng ký kinh doanh số: 0101659783,</p>
                   <p className="text-gray-100 m-0 leading-5">
-                    đăng ký thay đổi lần thứ 30, ngày 22 tháng 01 năm 2020 do Sở kế hoạch và đầu tư Thành phố Hồ Chí Minh cấp.
+                    đăng ký thay đổi lần thứ 30, ngày 22 tháng 01 năm 2020 do Sở kế hoạch và đầu tư Thành phố Hồ Chí
+                    Minh cấp.
                   </p>
                   <p className="text-gray-100 m-0 leading-5">Số Điện Thoại (Hotline): 1900 545 436</p>
                 </div>
