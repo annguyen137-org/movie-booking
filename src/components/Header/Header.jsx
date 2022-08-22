@@ -21,7 +21,10 @@ const Header = () => {
   });
 
   return (
-    <Layout.Header className="fixed top-0 w-full max-w-full my-auto z-50 bg-white shadow-sm shadow-slate-400">
+    <Layout.Header
+      className="fixed top-0 w-screen max-w-screen my-auto z-50 bg-white shadow-sm shadow-slate-400"
+      style={{ marginRight: "10px" }}
+    >
       <div className="container h-full w-full flex justify-between items-center p-4 text-lg">
         <NavLink
           to="/"

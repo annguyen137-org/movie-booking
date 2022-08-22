@@ -8,7 +8,7 @@ const PurchaseTemplate = () => {
     <Layout className="min-h-screen">
       <Header />
 
-      <Layout.Content className="mt-16 min-h-full">
+      <Layout.Content className="bg-slate-800 mt-16 min-h-full">
         <Outlet />
       </Layout.Content>
     </Layout>

@@ -1,5 +1,7 @@
-import PageLoading from "components/Loading/PageLoading";
 import React, { useEffect, useState } from "react";
+import PageLoading from "components/Loading/PageLoading";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCouch } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate, useParams, useLocation, useNavigate } from "react-router-dom";
 import SeatItem from "./SeatItem";
@@ -66,28 +68,40 @@ const Purchase = () => {
     <div className="lg:container mx-auto my-2 w-full">
       <div className="flex flex-col lg:flex-row w-full">
         <div className="w-full lg:w-4/5 lg:mx-2">
-          <div className="text-center bg-slate-500 text-gray-200 shadow-2xl mb-5 p-2">SCREEN</div>
+          <div className="text-center bg-slate-300 text-black shadow-2xl mb-5 p-2">SCREEN</div>
           <p className="m-1">16 ghế trên 1 hàng</p>
-          <div className="w-full grid grid-cols-8 md:grid-cols-16 md:mx-1 gap-1 lg:gap-2">
+          <div className="w-full grid grid-cols-8 md:grid-cols-16 md:mx-1 gap-1 lg:gap-3">
             {(ticketsData.danhSachGhe ?? []).map((seat) => {
               return <SeatItem key={seat.maGhe} seat={seat} />;
             })}
           </div>
           <div className="flex justify-around mt-5 shadow-lg">
-            <div className="text-center">
-              <p className="bg-red-600 px-5 py-2 border border-black my-2 rounded-md">...</p>
+            <div className="text-center text-gray-100">
+              <FontAwesomeIcon
+                icon={faCouch}
+                className="bg-red-600 px-5 py-2 border text-black border-black my-2 rounded-md"
+              />
               <p>Đã đặt</p>
             </div>
-            <div className="text-center">
-              <p className="bg-orange-400 px-5 py-2 border border-black my-2 rounded-md">...</p>
+            <div className="text-center text-gray-100">
+              <FontAwesomeIcon
+                icon={faCouch}
+                className="bg-orange-400 px-5 py-2 border text-black border-black my-2 rounded-md"
+              />
               <p>Ghế vip</p>
             </div>
-            <div className="text-center">
-              <p className="bg-slate-300 px-5 py-2 border border-black my-2 rounded-md">...</p>
+            <div className="text-center text-gray-100">
+              <FontAwesomeIcon
+                icon={faCouch}
+                className="bg-slate-300 px-5 py-2 border text-black border-black my-2 rounded-md"
+              />
               <p>Chưa đặt</p>
             </div>
-            <div className="text-center">
-              <p className="bg-green-600 px-5 py-2 border border-black my-2 rounded-md">...</p>
+            <div className="text-center text-gray-100">
+              <FontAwesomeIcon
+                icon={faCouch}
+                className="bg-green-600 px-5 py-2 border text-black border-black my-2 rounded-md"
+              />
               <p>Đang chọn</p>
             </div>
           </div>
