@@ -36,7 +36,7 @@ const SeatItem = ({ seat }) => {
             : `Click để đặt ghế ${seat.loaiGhe === "Vip" ? "vip" : "thường"} ${seat.tenGhe}`
         }
         size="large"
-        className={`w-2/3 lg:w-full h-full text-center m-0 p-0 text-black hover:text-black rounded-md overflow-hidden border-slate-900 hover:${
+        className={`w-full h-full text-center m-0 p-0 text-black hover:text-black rounded-md overflow-hidden border-slate-900 hover:${
           seat.daDat ? "" : "bg-white"
         } ${
           seat.daDat
@@ -50,9 +50,11 @@ const SeatItem = ({ seat }) => {
         disabled={seat.daDat}
         onClick={() => handleSelectTicket(seat)}
       >
-        <div>
+        <div className="flex flex-col items-center justify-center">
           <FontAwesomeIcon icon={faCouch} />
-          <p className="m-0 font-bold">{seat.tenGhe}</p>
+          <p className="m-0 font-bold sm:text-xs" style={{ fontSize: "10px" }}>
+            {seat.tenGhe}
+          </p>
         </div>
       </Button>
     </div>

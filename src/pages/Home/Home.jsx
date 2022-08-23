@@ -16,15 +16,21 @@ const Home = () => {
 
   const [showLoading, setShowLoading] = useState(false);
 
-  const { isTheatersLoading } = useSelector((state) => {
+  const { theatersBrandWithShowtime, isTheatersLoading } = useSelector((state) => {
     return state.theaters;
   });
 
+  const { banners, moviesPagination } = useSelector((state) => {
+    return state.movies;
+  });
+
   useEffect(() => {
-    dispatch(getMovieBanner());
-    dispatch(getMovieListPagination(1));
-    dispatch(getTheatersBrandWithShowtime());
-    setShowLoading(true);
+    if (!theatersBrandWithShowtime.length && !banners.length && !Object.keys(moviesPagination).length) {
+      dispatch(getMovieBanner());
+      dispatch(getMovieListPagination(1));
+      dispatch(getTheatersBrandWithShowtime());
+      setShowLoading(true);
+    }
   }, []);
 
   setTimeout(() => {
