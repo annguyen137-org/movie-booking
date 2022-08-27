@@ -7,6 +7,7 @@ import { logout } from "redux/slices/authSlice";
 import { getAccountInfo, resetAccountReducer } from "redux/slices/accountSlice";
 import { resetTicketsReducer } from "redux/slices/ticketsSlice";
 import { resetAdminReducer } from "redux/slices/adminSlice";
+import useChangeWidth from "utils/useChangeWidth";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -16,8 +17,16 @@ const AccountTemplate = () => {
 
   const { accountInfo, isUpdateSuccess, isLoading, error } = useSelector((state) => state.account);
 
+  const { width, changeWidth } = useChangeWidth();
+
   useEffect(() => {
     dispatch(getAccountInfo());
+
+    window.addEventListener("resize", changeWidth);
+
+    return () => {
+      window.removeEventListener("resize", changeWidth);
+    };
   }, []);
 
   const getMenuItem = (key, label, path, children) => {
@@ -48,14 +57,31 @@ const AccountTemplate = () => {
   ];
 
   return (
-    <Layout>
-      <Sider breakpoint="lg" collapsedWidth="0">
+    <Layout hasSider>
+      <Sider
+        collapsible={width === "md"}
+        breakpoint="lg"
+        collapsedWidth="0"
+        style={
+          (width === "xs" || width === "sm") && {
+            position: "fixed",
+            zIndex: 50,
+            top: 0,
+            bottom: 0,
+          }
+        }
+      >
         <div className="flex my-2 justify-center items-center">
           <img src="../icon-tixjpg.jpg" width={40} alt="" />
           <p className="text-gray-100 m-0 font-bold text-lg mx-2">Trang cá nhân</p>
         </div>
         <div className="mt-10 bg-slate-300">
-          <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" defaultOpenKeys={["1", "2", "3", "4"]}>
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={["1"]}
+            mode="inline"
+            defaultOpenKeys={["1", "2", "3", "4"]}
+          >
             {accountInfo.maLoaiNguoiDung === "KhachHang"
               ? userMenuItems.map((menuItem) => {
                   return (

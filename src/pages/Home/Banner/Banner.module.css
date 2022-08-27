@@ -1,12 +1,20 @@
 @media screen and (min-width: 768px) {
-  .banner-img {
+  .movie-banner .banner-img {
     height: 50vh !important;
   }
 }
 @media screen and (min-width: 1024px) {
-  .banner-img {
+  .movie-banner .banner-img {
     height: 85vh !important;
   }
+}
+
+.movie-banner .banner-play-icon {
+  display: none;
+}
+
+.movie-banner:hover .banner-play-icon {
+  display: block;
 }
 
 :global(.ant-carousel .slick-next::before) {

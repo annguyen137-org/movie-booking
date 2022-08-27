@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import { Button, Layout, Dropdown, Space, Menu } from "antd";
-import { UserOutlined, LogoutOutlined, RightSquareOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  LogoutOutlined,
+  RightSquareOutlined,
+} from "@ant-design/icons";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
 import { moviesRef } from "pages/Home/MovieShowing/MovieShowing";
@@ -38,9 +42,13 @@ const Header = () => {
           <li>
             <NavLink
               to="/"
-              className=" px-4 hover:text-orange-600 text-black -mb-1 border-b-2 dark:border-transparent"
+              className="relative px-4 hover:text-orange-600 text-black -mb-1 border-b-2 dark:border-transparent hover:after:w-2/3 
+              after:-translate-x-1/2 after:transition-all after:w-0 after:bg-orange-500 after:[content:''] after:absolute after:h-0.5 after:-bottom-2 after:left-1/2 after:duration-200"
               onClick={() => {
-                moviesRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                moviesRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "center",
+                });
               }}
             >
               Lịch chiếu
@@ -49,25 +57,37 @@ const Header = () => {
           <li>
             <NavLink
               to="/"
-              className="px-4 hover:text-orange-600 text-black border-b-2 dark:border-transparent"
+              className="relative px-4 hover:text-orange-600 text-black border-b-2 dark:border-transparent hover:after:w-2/3 
+              after:-translate-x-1/2 after:transition-all after:w-0 after:bg-orange-500 after:[content:''] after:absolute after:h-0.5 after:-bottom-2 after:left-1/2 after:duration-200"
               onClick={() => {
-                theatersRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                theatersRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "center",
+                });
               }}
             >
               Cụm Rạp
             </NavLink>
           </li>
           <li>
-            <NavLink to="/" className="px-4 hover:text-orange-600 text-black border-b-2 dark:border-transparent">
+            <NavLink
+              to="/"
+              className="relative px-4 hover:text-orange-600 text-black border-b-2 dark:border-transparent hover:after:w-2/3 
+              after:-translate-x-1/2 after:transition-all after:w-0 after:bg-orange-500 after:[content:''] after:absolute after:h-0.5 after:-bottom-2 after:left-1/2 after:duration-200"
+            >
               Tin Tức
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/"
-              className="px-4 hover:text-orange-600 text-black border-b-2 dark:border-transparent"
+              className="relative px-4 hover:text-orange-600 text-black border-b-2 dark:border-transparent hover:after:w-2/3 
+              after:-translate-x-1/2 after:transition-all after:w-0 after:bg-orange-500 after:[content:''] after:absolute after:h-0.5 after:-bottom-2 after:left-1/2 after:duration-200"
               onClick={() => {
-                appRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                appRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "center",
+                });
               }}
             >
               Ứng dụng
@@ -93,7 +113,13 @@ const Header = () => {
                       {
                         key: "2",
                         label: (
-                          <Link to={currentUser.maLoaiNguoiDung === "KhachHang" ? "/user/profile" : "/admin/profile"}>
+                          <Link
+                            to={
+                              currentUser.maLoaiNguoiDung === "KhachHang"
+                                ? "/user/profile"
+                                : "/admin/profile"
+                            }
+                          >
                             Trang cá nhân
                           </Link>
                         ),
@@ -171,7 +197,13 @@ const Header = () => {
                     {
                       key: "2",
                       label: (
-                        <Link to={currentUser.maLoaiNguoiDung === "KhachHang" ? "/user/profile" : "/admin/profile"}>
+                        <Link
+                          to={
+                            currentUser.maLoaiNguoiDung === "KhachHang"
+                              ? "/user/profile"
+                              : "/admin/profile"
+                          }
+                        >
                           Trang cá nhân
                         </Link>
                       ),
@@ -239,7 +271,11 @@ const Header = () => {
                     {
                       key: "3",
                       label: (
-                        <Button type="dashed" className="w-full mx-1 rounded-md" onClick={() => navigate("/")}>
+                        <Button
+                          type="dashed"
+                          className="w-full mx-1 rounded-md"
+                          onClick={() => navigate("/")}
+                        >
                           Về trang chủ
                         </Button>
                       ),
