@@ -24,7 +24,7 @@ const AddFilm = () => {
   return (
     <div className="w-full h-full py-5">
       <span className="text-lg p-2 rounded-md bg-orange-300 font-bold">Thêm phim:</span>
-      <div className="mt-5">
+      <div className="mt-5 px-1 lg:px-0">
         <FilmForm />
       </div>
       <Button type="link" onClick={() => navigate("/admin/films/film-list")}>

@@ -5,7 +5,15 @@ const movieAPI = {
     return axiosClient.get("QuanLyPhim/LayDanhSachPhim", { params: { maNhom: GROUPID } });
   },
 
-  getMovieListPagination: (page) => {
+  getMovieListPagination: (page = 1, keyword = undefined) => {
+    if (keyword !== undefined) {
+      return axiosClient.get("QuanLyPhim/LayDanhSachPhimPhanTrang", {
+        params: {
+          maNhom: GROUPID,
+          tenPhim: keyword,
+        },
+      });
+    }
     return axiosClient.get("QuanLyPhim/LayDanhSachPhimPhanTrang", {
       params: {
         maNhom: GROUPID,

@@ -9,7 +9,9 @@ import { notification, Button } from "antd";
 const EditFilm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { editMovieData, isLoading, actionSuccess, actionResponeAPI, error } = useSelector((state) => state.admin);
+  const { editMovieData, isLoading, actionSuccess, actionResponeAPI, error } = useSelector(
+    (state) => state.admin
+  );
 
   const { movieId } = useParams();
 
@@ -39,10 +41,13 @@ const EditFilm = () => {
   return (
     <div className="w-full h-full py-5">
       <span className="text-lg p-2 rounded-md bg-orange-300 font-bold">Sửa phim:</span>
-      <div className="mt-5">
+      <div className="mt-5 px-1 lg:px-0">
         <FilmForm editFilm={editMovieData} />
       </div>
-      <Button type="link" onClick={() => navigate("/admin/films/film-list", { state: location?.state })}>
+      <Button
+        type="link"
+        onClick={() => navigate("/admin/films/film-list", { state: location?.state })}
+      >
         Trở về
       </Button>
     </div>

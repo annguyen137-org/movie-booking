@@ -114,7 +114,10 @@ const FilmForm = ({ editFilm }) => {
     }
   };
   const onError = () => {
-    notification["error"]({ message: "Thêm phim thất bại", description: "Kiểm tra lại các trường thông tin" });
+    notification["error"]({
+      message: "Thêm phim thất bại",
+      description: "Kiểm tra lại các trường thông tin",
+    });
   };
 
   return (
@@ -127,11 +130,11 @@ const FilmForm = ({ editFilm }) => {
           span: 20,
         }}
         layout="horizontal"
-        className="border rounded-md py-5 bg-white"
+        className="border rounded-md py-5 px-2 lg:px-0 bg-white"
         onFinish={handleSubmit(onSubmit, onError)}
       >
-        <div className="flex w-full">
-          <div className="w-2/3">
+        <div className="flex flex-col lg:flex-row w-full">
+          <div className="w-full lg:w-2/3">
             <Form.Item
               label="Tên phim"
               required
@@ -167,7 +170,11 @@ const FilmForm = ({ editFilm }) => {
               validateStatus={errors.moTa ? "error" : isValid ? "success" : ""}
               help={errors.moTa?.message}
             >
-              <Controller control={control} name="moTa" render={({ field }) => <Input {...field} allowClear />} />
+              <Controller
+                control={control}
+                name="moTa"
+                render={({ field }) => <Input.TextArea rows={5} {...field} allowClear />}
+              />
             </Form.Item>
             <Form.Item
               label="Ngày khởi chiếu"
@@ -265,11 +272,11 @@ const FilmForm = ({ editFilm }) => {
               </div>
             </Form.Item>
           </div>
-          <div className="w-1/3 px-10">
+          <div className="w-full lg:w-1/3 lg:px-5 xl:px-10">
             {editFilm?.hinhAnh ?? imgSrc ? (
               <div>
                 <p>Hình phim</p>
-                <img src={imgSrc} alt="hinh-phim" className="w-full h-80" />
+                <img src={imgSrc} alt="hinh-phim" className="w-full md:w-1/2 lg:w-full h-80" />
               </div>
             ) : (
               <></>

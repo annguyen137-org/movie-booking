@@ -16,15 +16,15 @@ const Banner = () => {
   const { visible, closeModal, showModal } = useModalHook();
 
   return (
-    <div className="movie-banner">
+    <div className={`${styles["movie-banner"]}`}>
       <Carousel draggable dots arrows autoplay={!visible} autoplaySpeed={3000}>
         {banners.map((carousel) => {
           return (
             <div key={carousel.maBanner}>
-              <div className={`${styles["banner-img"]} h-80 relative w-full`}>
+              <div className={`${styles["banner-img"]} relative w-full`}>
                 <img src={carousel.hinhAnh} alt={carousel.maPhim} className="w-full h-full object-fill" />
                 <PlayCircleFilled
-                  className="absolute top-1/2 left-1/2 text-4xl md:text-7xl hover:scale-125 hover:text-orange-600 transition-all hover:cursor-pointer -translate-x-1/2 -translate-y-1/2"
+                  className={`${styles["banner-play-icon"]} absolute top-1/2 left-1/2 text-4xl md:text-7xl hover:scale-125 hover:text-orange-600 transition-all hover:cursor-pointer -translate-x-1/2 -translate-y-1/2`}
                   onClick={() => {
                     showModal(!visible);
                     setCode(carousel.maBanner);
@@ -38,7 +38,7 @@ const Banner = () => {
       <PopupModal
         visible={visible}
         onCancel={closeModal}
-        className={"w-5/6 h-1/3 sm:h-2/4 md:h-3/5 lg:h-4/6 2xl:h-5/6"}
+        className={"w-5/6 h-1/3 sm:h-2/4 md:h-3/5 lg:h-4/6 xl:h-5/6 2xl:h-5/6"}
         closeIcon={<></>}
         bodyStyle={{ padding: "0px", height: "100%" }}
       >
