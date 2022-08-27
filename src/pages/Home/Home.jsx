@@ -27,7 +27,7 @@ const Home = () => {
   useEffect(() => {
     if (!theatersBrandWithShowtime.length && !banners.length && !Object.keys(moviesPagination).length) {
       dispatch(getMovieBanner());
-      dispatch(getMovieListPagination(1));
+      dispatch(getMovieListPagination({ page: 1 }));
       dispatch(getTheatersBrandWithShowtime());
       setShowLoading(true);
     }

@@ -14,7 +14,7 @@ const FilmItem = ({ movie, isLoading }) => {
 
   return (
     <div
-      className={`${styles["card"]} flex flex-col rounded-md justify-between bg-white overflow-hidden border-r-blue-700 min-h-full h-80 relative shadow-xl transition-all duration-500`}
+      className={`${styles["card"]} flex flex-col rounded-md justify-between bg-white overflow-hidden  min-h-full h-80 relative shadow-xl transition-all duration-500`}
     >
       <div className={`${styles["card-img"]} overflow-hidden w-full h-3/5`}>
         <Link to={`/detail/${movie.maPhim}`}>

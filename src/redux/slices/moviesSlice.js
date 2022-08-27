@@ -22,14 +22,17 @@ export const getMovieList = createAsyncThunk("movies/getMovieList", async () => 
   }
 });
 
-export const getMovieListPagination = createAsyncThunk("movies/getMovieListPagination", async (page) => {
-  try {
-    const data = await movieAPI.getMovieListPagination(page);
-    return data;
-  } catch (error) {
-    throw error;
+export const getMovieListPagination = createAsyncThunk(
+  "movies/getMovieListPagination",
+  async ({ page = 1, keyword = undefined }) => {
+    try {
+      const data = await movieAPI.getMovieListPagination(page, keyword);
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
-});
+);
 
 export const getMovieById = createAsyncThunk("movies/getMovieById", async (movieId) => {
   try {
@@ -87,6 +90,7 @@ const moviesSlice = createSlice({
       return { ...state, isMoviesLoading: true };
     });
     builder.addCase(getMovieListPagination.fulfilled, (state, action) => {
+      console.log(action.payload);
       return { ...state, error: "", isMoviesLoading: false, moviesPagination: action.payload };
     });
     builder.addCase(getMovieListPagination.rejected, (state, action) => {

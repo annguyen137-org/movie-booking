@@ -109,7 +109,7 @@ const UserForm = ({ editUser }) => {
 
   return (
     <div className="flex justify-center items-center">
-      <div className="w-1/2">
+      <div className="pr-5 md:w-1/2">
         <Form
           autoComplete="off"
           onFinish={handleSubmit(onSubmit, onError)}
@@ -133,7 +133,11 @@ const UserForm = ({ editUser }) => {
               name="taiKhoan"
               defaultValue={editUser?.taiKhoan ?? ""}
               render={({ field }) => (
-                <Input {...field} className="w-full px-3  border rounded-md" placeholder="Nhập tài khoản" />
+                <Input
+                  {...field}
+                  className="w-full px-3  border rounded-md"
+                  placeholder="Nhập tài khoản"
+                />
               )}
             />
           </Form.Item>
@@ -149,7 +153,11 @@ const UserForm = ({ editUser }) => {
               name="matKhau"
               defaultValue={editUser?.matKhau ?? ""}
               render={({ field }) => (
-                <Input.Password {...field} className="w-full px-3  border rounded-md" placeholder="Nhập mật khẩu" />
+                <Input.Password
+                  {...field}
+                  className="w-full px-3  border rounded-md"
+                  placeholder="Nhập mật khẩu"
+                />
               )}
             />
           </Form.Item>
@@ -166,7 +174,11 @@ const UserForm = ({ editUser }) => {
               name="email"
               defaultValue={editUser?.email ?? ""}
               render={({ field }) => (
-                <Input className="w-full px-3  border rounded-md" placeholder="Nhập Email" {...field} />
+                <Input
+                  className="w-full px-3  border rounded-md"
+                  placeholder="Nhập Email"
+                  {...field}
+                />
               )}
             />
           </Form.Item>
@@ -227,7 +239,7 @@ const UserForm = ({ editUser }) => {
             />
           </Form.Item>
 
-          <div className="pt-5 mx-20">
+          <div className="pt-5 md:mx-20">
             <Button disabled={disableButton} type="primary" htmlType="submit" className="mx-5">
               {editUser ? "Sửa user" : "Thêm user"}
             </Button>
