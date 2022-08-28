@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Select, Input } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import movieAPI from "services/movieAPI";
@@ -11,6 +11,12 @@ import { getMovieListPagination } from "redux/slices/moviesSlice";
 const QuickTicket = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const {
+    moviesPagination: { currentPage },
+  } = useSelector((state) => state.movies);
+
+  const [markPage, setMarkPage] = useState(currentPage);
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
@@ -39,6 +45,15 @@ const QuickTicket = () => {
 
   const handleSelectShowtime = (value) => {
     setShowtime(value);
+  };
+
+  const handleSearch = (value) => {
+    setMarkPage(currentPage);
+    if (value) {
+      dispatch(getMovieListPagination({ keyword: value }));
+    } else {
+      dispatch(getMovieListPagination({ page: markPage }));
+    }
   };
 
   useEffect(() => {
@@ -146,16 +161,15 @@ const QuickTicket = () => {
           <div>
             <p className="font-bold text-md m-0 lg:m-1">Tìm kiếm phim</p>
             <Input.Search
-              onSearch={(value) =>
-                value
-                  ? dispatch(getMovieListPagination({ keyword: value }))
-                  : dispatch(getMovieListPagination({ page: 1 }))
-              }
-              onPressEnter={(e) =>
-                e.target.value
-                  ? dispatch(getMovieListPagination({ keyword: e.target.value }))
-                  : dispatch(getMovieListPagination({ page: 1 }))
-              }
+              onSearch={handleSearch}
+              onPressEnter={(e) => {
+                setMarkPage(currentPage);
+                if (e.target.value) {
+                  dispatch(getMovieListPagination({ keyword: e.target.value }));
+                } else {
+                  dispatch(getMovieListPagination({ page: markPage }));
+                }
+              }}
               allowClear
             />
           </div>
