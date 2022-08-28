@@ -13,9 +13,7 @@ const FilmList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { movieList, isLoading, actionSuccess, actionResponeAPI, error } = useSelector(
-    (state) => state.admin
-  );
+  const { movieList, isLoading, actionSuccess, actionResponeAPI, error } = useSelector((state) => state.admin);
 
   const [keyword, setKeyword] = useState("");
 
@@ -227,7 +225,7 @@ const FilmList = () => {
             placeholder="Tìm kiếm phim"
             allowClear={true}
             value={keyword}
-            style={width > 640 ? { width: "50%" } : { width: "100%" }}
+            style={width === "lg" || width === "xl" || width === "2xl" ? { width: "50%" } : { width: "100%" }}
             onPressEnter={(e) => handleSearch(e.target.value)}
             enterButton
             onChange={(e) => setKeyword(e.target.value)}
@@ -244,6 +242,7 @@ const FilmList = () => {
           pagination={{
             current: currentPage,
             position: "bottom",
+            hideOnSinglePage: true,
             defaultPageSize: 5,
             showSizeChanger: false,
             showQuickJumper: true,

@@ -11,7 +11,7 @@ import QuickTicket from "./QuickTicket/QuickTicket";
 import AppInfo from "./AppInfo/AppInfo";
 
 const Home = () => {
-  window.scrollTo(0, 0);
+  // window.scrollTo(0, 0);
   const dispatch = useDispatch();
 
   const [showLoading, setShowLoading] = useState(false);

@@ -8,6 +8,16 @@
     height: 85vh !important;
   }
 }
+@media screen and (max-width: 767px) {
+  .movie-banner .banner-img {
+    height: 50vh !important;
+  }
+}
+@media screen and (max-width: 639px) {
+  .movie-banner .banner-img {
+    height: 30vh !important;
+  }
+}
 
 .movie-banner .banner-play-icon {
   display: none;
