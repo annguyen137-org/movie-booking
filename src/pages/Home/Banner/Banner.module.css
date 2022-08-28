@@ -1,6 +1,6 @@
 @media screen and (min-width: 768px) {
   .movie-banner .banner-img {
-    height: 50vh !important;
+    height: 70vh !important;
   }
 }
 @media screen and (min-width: 1024px) {
@@ -15,7 +15,7 @@
 }
 @media screen and (max-width: 639px) {
   .movie-banner .banner-img {
-    height: 30vh !important;
+    height: 40vh !important;
   }
 }
 
