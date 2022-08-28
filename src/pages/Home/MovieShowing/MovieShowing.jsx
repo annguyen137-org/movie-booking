@@ -24,8 +24,8 @@ const MovieShowing = () => {
   };
 
   return (
-    <div className="container mx-auto text-center px-5 md:px-10 lg:px-40 mt-10 mb-5" ref={moviesRef}>
-      <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 relative`}>
+    <div className="container mx-auto text-center px-5 md:px-10 lg:px-20 xl:px-40 mt-10 mb-5" ref={moviesRef}>
+      <div className={`grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 xl:grid-cols-4 lg:gap-6 xl:gap-10 relative`}>
         {items &&
           items.map((movie) => {
             return <FilmItem movie={movie} key={movie.maPhim} isLoading={isMoviesLoading} />;

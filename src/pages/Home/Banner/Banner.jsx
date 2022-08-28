@@ -46,7 +46,7 @@ const Banner = () => {
         onCancel={closeModal}
         className={"w-5/6 h-1/3 sm:h-2/4 md:h-3/5 lg:h-4/6 xl:h-5/6 2xl:h-5/6"}
         closeIcon={<></>}
-        bodyStyle={{ padding: "0px", height: "100%" }}
+        bodyStyle={{ padding: "0px", height: "100%", overFlowY: "scroll" }}
       >
         {
           <iframe
