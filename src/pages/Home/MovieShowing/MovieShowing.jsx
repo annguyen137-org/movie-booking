@@ -19,8 +19,8 @@ const MovieShowing = () => {
   });
 
   const handleChangePage = (page) => {
-    dispatch(getMovieListPagination(page));
-    moviesRef.current.scrollIntoView({ block: "center", behavior: "smooth" });
+    dispatch(getMovieListPagination({ page: page }));
+    moviesRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
   return (

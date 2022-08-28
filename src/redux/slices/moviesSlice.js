@@ -90,7 +90,6 @@ const moviesSlice = createSlice({
       return { ...state, isMoviesLoading: true };
     });
     builder.addCase(getMovieListPagination.fulfilled, (state, action) => {
-      console.log(action.payload);
       return { ...state, error: "", isMoviesLoading: false, moviesPagination: action.payload };
     });
     builder.addCase(getMovieListPagination.rejected, (state, action) => {

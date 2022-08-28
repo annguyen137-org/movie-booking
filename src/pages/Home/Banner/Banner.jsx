@@ -17,12 +17,18 @@ const Banner = () => {
 
   return (
     <div className={`${styles["movie-banner"]}`}>
-      <Carousel draggable dots arrows autoplay={!visible} autoplaySpeed={3000}>
+      <Carousel
+        draggable
+        dots
+        arrows
+        // autoplay={!visible}
+        autoplaySpeed={3000}
+      >
         {banners.map((carousel) => {
           return (
             <div key={carousel.maBanner}>
-              <div className={`${styles["banner-img"]} relative w-full`}>
-                <img src={carousel.hinhAnh} alt={carousel.maPhim} className="w-full h-full object-fill" />
+              <div className={`${styles["banner-img"]} relative w-full h-full`}>
+                <img src={carousel.hinhAnh} alt={carousel.maPhim} className="w-full min-h-full object-fill" />
                 <PlayCircleFilled
                   className={`${styles["banner-play-icon"]} absolute top-1/2 left-1/2 text-4xl md:text-7xl hover:scale-125 hover:text-orange-600 transition-all hover:cursor-pointer -translate-x-1/2 -translate-y-1/2`}
                   onClick={() => {
