@@ -77,7 +77,7 @@ const QuickTicket = () => {
 
   return (
     <div
-      className={`container mx-auto text-center px-5 md:px-10 lg:px-40 ${
+      className={`container mx-auto text-center px-5 md:px-10 lg:px-20 xl:px-40 ${
         width === "lg" || width === "xl" || width === "2xl" ? "-mt-5" : "mt-3"
       } z-30 relative`}
     >

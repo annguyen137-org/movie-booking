@@ -1,12 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Button, Layout, Dropdown, Space, Menu } from "antd";
-import {
-  UserOutlined,
-  LogoutOutlined,
-  RightSquareOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, LogoutOutlined, RightSquareOutlined } from "@ant-design/icons";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-
 import { moviesRef } from "pages/Home/MovieShowing/MovieShowing";
 import { theatersRef } from "pages/Home/TheaterTabs/TheaterTabs";
 import { appRef } from "pages/Home/AppInfo/AppInfo";
@@ -15,6 +10,8 @@ import { logout } from "redux/slices/authSlice";
 import { resetAccountReducer } from "redux/slices/accountSlice";
 import { resetTicketsReducer } from "redux/slices/ticketsSlice";
 import { resetAdminReducer } from "redux/slices/adminSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRightFromBracket, faRightToBracket, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -26,8 +23,8 @@ const Header = () => {
 
   return (
     <Layout.Header
-      className="fixed top-0 w-screen max-w-screen my-auto z-50 bg-white shadow-sm shadow-slate-400"
-      style={{ marginRight: "10px" }}
+      className="fixed top-0 w-screen my-auto z-50 bg-white shadow-sm shadow-slate-400"
+      style={{ marginRight: "-10px" }}
     >
       <div className="container h-full w-full flex justify-between items-center p-4 text-lg">
         <NavLink
@@ -113,13 +110,7 @@ const Header = () => {
                       {
                         key: "2",
                         label: (
-                          <Link
-                            to={
-                              currentUser.maLoaiNguoiDung === "KhachHang"
-                                ? "/user/profile"
-                                : "/admin/profile"
-                            }
-                          >
+                          <Link to={currentUser.maLoaiNguoiDung === "KhachHang" ? "/user/profile" : "/admin/profile"}>
                             Trang cá nhân
                           </Link>
                         ),
@@ -152,12 +143,17 @@ const Header = () => {
               </Dropdown>
               {/* <p className="m-0 p-2 bg-orange-200 rounded-md hover:cursor-pointer">{currentUser.taiKhoan}</p> */}
             </div>
+
             <Button
               title="Đăng xuất"
-              className="flex items-center border-orange-600 hover:bg-orange-600 hover:text-white mx-1 text-lg rounded-md focus:text-orange-600"
+              className="flex items-center hover:border-slate-500 border-0 text-black mx-1 text-lg "
               onClick={() => dispatch(logout())}
             >
-              <LogoutOutlined />
+              <FontAwesomeIcon
+                size="lg"
+                icon={faRightFromBracket}
+                className="transition-all duration-300 hover:scale-125 hover:text-orange-500"
+              />
             </Button>
           </div>
         ) : (
@@ -166,14 +162,14 @@ const Header = () => {
               className="flex items-center bg-orange-50 border-orange-600 hover:text-orange-600 mx-1 text-lg rounded-md focus:text-orange-600"
               onClick={() => navigate("/login")}
             >
-              <UserOutlined />
+              <FontAwesomeIcon icon={faRightToBracket} className="mr-2 text-slate-500" />
               Đăng nhập
             </Button>
             <Button
               className="flex items-center bg-orange-50 border-orange-600 hover:text-orange-600 mx-1 text-lg rounded-md focus:text-orange-600"
               onClick={() => navigate("/register")}
             >
-              <UserOutlined />
+              <FontAwesomeIcon icon={faUserPlus} className="mr-2 text-slate-500" />
               Đăng ký
             </Button>
           </div>
@@ -197,13 +193,7 @@ const Header = () => {
                     {
                       key: "2",
                       label: (
-                        <Link
-                          to={
-                            currentUser.maLoaiNguoiDung === "KhachHang"
-                              ? "/user/profile"
-                              : "/admin/profile"
-                          }
-                        >
+                        <Link to={currentUser.maLoaiNguoiDung === "KhachHang" ? "/user/profile" : "/admin/profile"}>
                           Trang cá nhân
                         </Link>
                       ),
@@ -271,11 +261,7 @@ const Header = () => {
                     {
                       key: "3",
                       label: (
-                        <Button
-                          type="dashed"
-                          className="w-full mx-1 rounded-md"
-                          onClick={() => navigate("/")}
-                        >
+                        <Button type="dashed" className="w-full mx-1 rounded-md" onClick={() => navigate("/")}>
                           Về trang chủ
                         </Button>
                       ),

@@ -63,7 +63,7 @@ const AccountTemplate = () => {
         breakpoint="lg"
         collapsedWidth="0"
         style={
-          (width === "xs" || width === "sm") && {
+          (width === "xs" || width === "sm" || width === "md") && {
             position: "fixed",
             zIndex: 50,
             top: 0,
@@ -76,12 +76,7 @@ const AccountTemplate = () => {
           <p className="text-gray-100 m-0 font-bold text-lg mx-2">Trang cá nhân</p>
         </div>
         <div className="mt-10 bg-slate-300">
-          <Menu
-            theme="dark"
-            defaultSelectedKeys={["1"]}
-            mode="inline"
-            defaultOpenKeys={["1", "2", "3", "4"]}
-          >
+          <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" defaultOpenKeys={["1", "2", "3", "4"]}>
             {accountInfo.maLoaiNguoiDung === "KhachHang"
               ? userMenuItems.map((menuItem) => {
                   return (
@@ -134,7 +129,7 @@ const AccountTemplate = () => {
             </div>
           </div>
         </Header>
-        <Content className="pl-10 lg:px-5 border border-slate-300 h-full">
+        <Content className="pl-10 lg:px-5 mr-3 border border-slate-300 h-full">
           {isLoading ? <PageLoading classname={"min-h-full"} /> : <Outlet />}
         </Content>
         {/* <Footer>@ 2022 TIX</Footer> */}

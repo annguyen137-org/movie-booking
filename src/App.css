@@ -2,7 +2,6 @@
 
 ::-webkit-scrollbar {
   width: 10px;
-  height: 10px;
   border: 1px solid #d5d5d5;
 }
 
@@ -13,6 +12,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
+  min-height: 100px;
   border-radius: 10px;
   background: #b0b0b0;
   cursor: pointer;
