@@ -8,11 +8,7 @@ import SeatItem from "./SeatItem";
 import { currencyVNDFormat } from "utils/currencyFormat";
 import { Popconfirm } from "antd";
 
-import {
-  resetTicketsReducer,
-  ticketsByShowtime,
-  bookSelectedTickets,
-} from "redux/slices/ticketsSlice";
+import { resetTicketsReducer, ticketsByShowtime, bookSelectedTickets } from "redux/slices/ticketsSlice";
 import { Button, notification } from "antd";
 import PopupModal from "components/Modal/PopupModal";
 import useModalHook from "utils/useModalHook";
@@ -27,10 +23,9 @@ const Purchase = () => {
   const { visible, showModal, closeModal } = useModalHook();
   const [confirmVisible, setConfirmVisible] = useState(false);
 
-  const { ticketsData, selectedSeats, isPageLoading, isConfirmLoading, bookedSuccess, error } =
-    useSelector((state) => {
-      return state.tickets;
-    });
+  const { ticketsData, selectedSeats, isPageLoading, isConfirmLoading, bookedSuccess, error } = useSelector((state) => {
+    return state.tickets;
+  });
 
   const { currentUser } = useSelector((state) => state.auth);
 
@@ -126,22 +121,16 @@ const Purchase = () => {
               {total && currencyVNDFormat.format(total)}
               <span className="mx-2 text-xl">VND</span>
             </p>
-            <div className="flex flex-row md:flex-col justify-start text-left">
+            <div className="flex flex-row lg:flex-col justify-start text-left">
               <img src={ticketsData.thongTinPhim?.hinhAnh} alt="" className="h-72 md:w-full mr-5" />
 
               <div>
                 <div>
                   <p className=" border-slate-600 border-b  font-bold pb-1">
-                    Cụm rạp:{" "}
-                    <span className="text-green-600 text-lg">
-                      {ticketsData.thongTinPhim?.tenCumRap}
-                    </span>
+                    Cụm rạp: <span className="text-green-600 text-lg">{ticketsData.thongTinPhim?.tenCumRap}</span>
                   </p>
                   <p className=" border-slate-600 border-b font-bold pb-1">
-                    Địa chỉ:{" "}
-                    <span className="text-green-600 text-md">
-                      {ticketsData.thongTinPhim?.diaChi}
-                    </span>
+                    Địa chỉ: <span className="text-green-600 text-md">{ticketsData.thongTinPhim?.diaChi}</span>
                   </p>
                   <p className=" border-slate-600 border-b  font-bold pb-1">
                     Rạp:{" "}
@@ -153,19 +142,11 @@ const Purchase = () => {
                 <div>
                   <p className=" border-slate-600 border-b font-bold pb-1">
                     Ngày giờ chiếu:
-                    <span className="text-green-600 text-lg">
-                      {ticketsData.thongTinPhim?.ngayChieu}
-                    </span>{" "}
-                    -
-                    <span className="text-red-600 text-lg">
-                      {ticketsData.thongTinPhim?.gioChieu}
-                    </span>
+                    <span className="text-green-600 text-lg">{ticketsData.thongTinPhim?.ngayChieu}</span> -
+                    <span className="text-red-600 text-lg">{ticketsData.thongTinPhim?.gioChieu}</span>
                   </p>
                   <p className=" border-slate-600 border-b font-bold pb-1">
-                    Tên phim:{" "}
-                    <span className="text-green-600 text-lg">
-                      {ticketsData.thongTinPhim?.tenPhim}
-                    </span>
+                    Tên phim: <span className="text-green-600 text-lg">{ticketsData.thongTinPhim?.tenPhim}</span>
                   </p>
                   <p className=" border-slate-600 border-b  font-bold pb-1">
                     Ghế chọn:
@@ -204,11 +185,7 @@ const Purchase = () => {
                       <Button
                         loading={isConfirmLoading}
                         disabled={!selectedSeats.length || isConfirmLoading}
-                        onClick={() =>
-                          !Object.keys(currentUser).length
-                            ? showModal(true)
-                            : setConfirmVisible(true)
-                        }
+                        onClick={() => (!Object.keys(currentUser).length ? showModal(true) : setConfirmVisible(true))}
                         size="large"
                         className="bg-orange-600 w-full round-md text-black hover:text-black font-bold border-orange-600 hover:border-orange-500 hover:bg-orange-500 hover:scale-y-125"
                       >

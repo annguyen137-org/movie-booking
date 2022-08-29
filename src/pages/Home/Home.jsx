@@ -14,30 +14,21 @@ const Home = () => {
   // window.scrollTo(0, 0);
   const dispatch = useDispatch();
 
-  const [showLoading, setShowLoading] = useState(false);
-
-  const { theatersBrandWithShowtime, isTheatersLoading } = useSelector((state) => {
+  const { isTheatersLoading } = useSelector((state) => {
     return state.theaters;
   });
 
-  const { banners, moviesPagination } = useSelector((state) => {
+  const { isBannersLoading, isMoviesLoading } = useSelector((state) => {
     return state.movies;
   });
 
   useEffect(() => {
-    if (!theatersBrandWithShowtime.length && !banners.length && !Object.keys(moviesPagination).length) {
-      dispatch(getMovieBanner());
-      dispatch(getMovieListPagination({ page: 1 }));
-      dispatch(getTheatersBrandWithShowtime());
-      setShowLoading(true);
-    }
+    dispatch(getMovieBanner());
+    dispatch(getMovieListPagination({ page: 1 }));
+    dispatch(getTheatersBrandWithShowtime());
   }, []);
 
-  setTimeout(() => {
-    setShowLoading(false);
-  }, 1000);
-
-  if (showLoading || isTheatersLoading) {
+  if (isTheatersLoading) {
     return <PageLoading />;
   }
 
