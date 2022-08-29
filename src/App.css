@@ -37,3 +37,16 @@
 .ant-modal-content {
   height: 100% !important;
 }
+
+.ant-tabs-nav-list .ant-tabs-ink-bar.ant-tabs-ink-bar-animated {
+  @apply bg-orange-500;
+  width: 3px;
+}
+
+.ant-tabs-nav-list .ant-tabs-tab {
+  opacity: 0.5 !important;
+}
+
+.ant-tabs-nav-list .ant-tabs-tab.ant-tabs-tab-active {
+  opacity: 1 !important;
+}

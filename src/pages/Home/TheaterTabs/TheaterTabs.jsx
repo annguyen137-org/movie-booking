@@ -47,18 +47,15 @@ const TheaterTabs = () => {
                       msOverflowStyle: "none",
                     }}
                   >
-                    {brand.lstCumRap.map((theater) => {
+                    {brand.lstCumRap.map((theater, index) => {
                       return (
                         <Tabs.TabPane
-                          key={theater.maCumRap}
+                          key={index}
                           tab={
-                            <div className="px-2 text-left max-w-xs transition-colors active:bg-slate-400">
-                              <div
-                                className="flex flex-col justify-start items-start border-b border-gray-300"
-                                title={theater.diaChi}
-                              >
-                                <h4 className="text-green-600 text-lg w-full">{theater.tenCumRap}</h4>
-                                <p className="truncate text-gray-500 text-sm w-full">{theater.diaChi}</p>
+                            <div className="px-2 text-left transition-colors border-b border-slate-500 active:bg-slate-400">
+                              <div className="" title={theater.diaChi}>
+                                <h4 className="text-green-600 text-lg font-bold">{theater.tenCumRap}</h4>
+                                <p className=" text-gray-500 font-bold text-sm whitespace-normal">{theater.diaChi}</p>
                               </div>
                             </div>
                           }

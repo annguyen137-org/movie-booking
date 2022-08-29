@@ -1,7 +1,7 @@
 import axios from "axios";
 import store from "redux/store";
 
-export const GROUPID = "GP09";
+export const GROUPID = "GP10";
 
 const axiosClient = axios.create({
   baseURL: "https://movienew.cybersoft.edu.vn/api",

@@ -109,7 +109,7 @@ const UserForm = ({ editUser }) => {
 
   return (
     <div className="flex justify-center items-center">
-      <div className="pr-5 md:w-1/2">
+      <div className="pr-5 md:w-1/2 md:p-5 bg-white rounded-md">
         <Form
           autoComplete="off"
           onFinish={handleSubmit(onSubmit, onError)}
@@ -135,6 +135,7 @@ const UserForm = ({ editUser }) => {
               render={({ field }) => (
                 <Input
                   {...field}
+                  disabled={editUser?.taiKhoan}
                   className="w-full px-3  border rounded-md"
                   placeholder="Nhập tài khoản"
                 />
@@ -153,11 +154,7 @@ const UserForm = ({ editUser }) => {
               name="matKhau"
               defaultValue={editUser?.matKhau ?? ""}
               render={({ field }) => (
-                <Input.Password
-                  {...field}
-                  className="w-full px-3  border rounded-md"
-                  placeholder="Nhập mật khẩu"
-                />
+                <Input.Password {...field} className="w-full px-3  border rounded-md" placeholder="Nhập mật khẩu" />
               )}
             />
           </Form.Item>
@@ -174,11 +171,7 @@ const UserForm = ({ editUser }) => {
               name="email"
               defaultValue={editUser?.email ?? ""}
               render={({ field }) => (
-                <Input
-                  className="w-full px-3  border rounded-md"
-                  placeholder="Nhập Email"
-                  {...field}
-                />
+                <Input className="w-full px-3  border rounded-md" placeholder="Nhập Email" {...field} />
               )}
             />
           </Form.Item>
