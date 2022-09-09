@@ -14,4 +14,8 @@
     width: unset !important;
     overflow: unset !important;
   }
+
+  input {
+    font-size: 16px !important;
+  }
 }
