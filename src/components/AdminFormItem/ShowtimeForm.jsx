@@ -17,6 +17,7 @@ const ShowtimeForm = () => {
 
   const [showtimeState, setShowtimeState] = useState({
     heThongRap: [],
+    brandId: "",
     cumRap: [],
   });
 
@@ -31,18 +32,37 @@ const ShowtimeForm = () => {
     fetchBrandsData();
   }, []);
 
-  const handleSelectBrand = async (brandId) => {
-    try {
-      const data = await getTheaterBranchByBrand(brandId);
-      setShowtimeState({ ...showtimeState, cumRap: [...data] });
-    } catch (error) {}
+  // const handleSelectBrand = async (brandId) => {
+  //   try {
+  //     const data = await getTheaterBranchByBrand(brandId);
+  //     setShowtimeState({ ...showtimeState, cumRap: [...data] });
+  //   } catch (error) {}
+  // };
+  const handleSelectBrand = (brandId) => {
+    setShowtimeState({ ...showtimeState, brandId: brandId });
   };
+
+  useEffect(() => {
+    if (showtimeState.brandId) {
+      resetField("maCumRap");
+      (async () => {
+        try {
+          const data = await getTheaterBranchByBrand(showtimeState.brandId);
+          setShowtimeState({ ...showtimeState, cumRap: [...data] });
+        } catch (error) {}
+      })();
+    }
+  }, [showtimeState.brandId]);
 
   const filmItemSchema = yup.object().shape({
     maPhim: yup.number().required().default(parseInt(movieId)),
     maHeThongRap: yup.string().required("Chọn hệ thống rạp!"),
     maCumRap: yup.string().required("Chọn chi nhánh rạp!"),
-    ngayChieuGioChieu: yup.date().required("Chọn ngày giờ chiếu phim!").default(moment(new Date())),
+    ngayChieuGioChieu: yup
+      .date()
+      .required("Chọn ngày giờ chiếu phim!")
+      .typeError("Invalid date!")
+      .default(moment(new Date())),
     giaVe: yup.number().required("Nhập giá vé"),
   });
 
@@ -50,6 +70,7 @@ const ShowtimeForm = () => {
     control,
     handleSubmit,
     reset,
+    resetField,
     formState: { errors, isValid },
   } = useForm({
     mode: "onBlur",
@@ -96,8 +117,8 @@ const ShowtimeForm = () => {
             label="Hệ thống rạp"
             required
             hasFeedback
-            validateStatus={errors.heThongRap ? "error" : isValid ? "success" : ""}
-            help={errors.heThongRap?.message}
+            validateStatus={errors.maHeThongRap ? "error" : isValid ? "success" : ""}
+            help={errors.maHeThongRap?.message}
           >
             <Controller
               control={control}
@@ -122,8 +143,8 @@ const ShowtimeForm = () => {
             label="Cụm rạp"
             required
             hasFeedback
-            validateStatus={errors.cumRap ? "error" : isValid ? "success" : ""}
-            help={errors.cumRap?.message}
+            validateStatus={errors.maCumRap ? "error" : isValid ? "success" : ""}
+            help={errors.maCumRap?.message}
           >
             <Controller
               control={control}
@@ -145,7 +166,7 @@ const ShowtimeForm = () => {
             label="Ngày chiếu"
             required
             hasFeedback
-            validateStatus={errors.ngayKhoiChieu ? "error" : isValid ? "success" : ""}
+            validateStatus={errors.ngayChieuGioChieu ? "error" : isValid ? "success" : ""}
             help={errors.ngayChieuGioChieu?.message}
           >
             <Controller

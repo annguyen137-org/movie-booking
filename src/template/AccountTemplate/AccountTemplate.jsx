@@ -72,7 +72,7 @@ const AccountTemplate = () => {
         }
       >
         <div className="flex my-2 justify-center items-center">
-          <img src="../icon-tixjpg.jpg" width={40} alt="" />
+          <img src="../icon-tixjpg.jpg" width={40} alt="" style={{ borderRadius: "10px" }} />
           <p className="text-gray-100 m-0 font-bold text-lg mx-2">Trang cá nhân</p>
         </div>
         <div className="mt-10 bg-slate-300">

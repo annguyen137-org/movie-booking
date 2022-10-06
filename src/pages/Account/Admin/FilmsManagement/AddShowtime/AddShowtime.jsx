@@ -23,7 +23,7 @@ const AddShowtime = () => {
 
   return (
     <div className="w-full h-full py-5">
-      <span className="text-lg p-2 rounded-md bg-orange-300 font-bold">Thêm phim:</span>
+      <span className="text-lg p-2 rounded-md bg-orange-300 font-bold">Thêm lịch chiếu:</span>
       <div className="mt-5">
         <ShowtimeForm />
       </div>
