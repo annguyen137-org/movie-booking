@@ -7,6 +7,7 @@ import movieAPI from "services/movieAPI";
 import theaterAPI from "services/theaterAPI";
 import useChangeWidth from "utils/useChangeWidth";
 import { getMovieListPagination } from "redux/slices/moviesSlice";
+import { Controller, useForm } from "react-hook-form";
 
 const QuickTicket = () => {
   const navigate = useNavigate();
@@ -24,17 +25,15 @@ const QuickTicket = () => {
     movieList: [],
     theaterBrands: [],
   });
-  const [movie, setMovie] = useState("");
+
+  const [movieId, setMovieId] = useState("");
   const [currentBranch, setCurrentBranch] = useState({});
   const [showtime, setShowtime] = useState("");
 
   const { width, changeWidth } = useChangeWidth();
 
-  const handleSelectMovie = async (value) => {
-    setMovie(value);
-    setQuickBuyState({ ...quickBuyState, theaterBrands: [] });
-    const { heThongRapChieu } = await theaterAPI.getShowtimesByMovieId(value);
-    setQuickBuyState({ ...quickBuyState, theaterBrands: [...heThongRapChieu] });
+  const handleSelectMovie = (value) => {
+    setMovieId(value);
   };
 
   const handleSelectBranch = (value) => {
@@ -56,8 +55,27 @@ const QuickTicket = () => {
     }
   };
 
+  const { control, resetField, handleSubmit } = useForm({
+    mode: "onSubmit",
+  });
+
+  const onQuickBuy = () => {
+    if (!showtime) {
+      return;
+    }
+    navigate(`/purchase/${showtime}`);
+  };
+
   useEffect(() => {
     window.addEventListener("resize", changeWidth);
+
+    if (isFirstLoad) {
+      setIsFirstLoad(false);
+      (async () => {
+        const data = await movieAPI.getMovieList();
+        setQuickBuyState({ ...quickBuyState, movieList: [...data] });
+      })();
+    }
 
     return () => {
       window.removeEventListener("resize", changeWidth);
@@ -65,15 +83,17 @@ const QuickTicket = () => {
   }, []);
 
   useEffect(() => {
-    if (isFirstLoad) {
-      const fetchMovie = async () => {
-        const data = await movieAPI.getMovieList();
-        setQuickBuyState({ ...quickBuyState, movieList: [...data] });
-      };
-      fetchMovie();
-      setIsFirstLoad(false);
+    if (movieId) {
+      resetField("branch", { defaultValue: "Rạp" });
+      resetField("showtime", { defaultValue: "Lịch chiếu" });
+      setCurrentBranch({});
+      setShowtime("");
+      (async () => {
+        const { heThongRapChieu } = await theaterAPI.getShowtimesByMovieId(movieId);
+        setQuickBuyState({ ...quickBuyState, theaterBrands: [...heThongRapChieu] });
+      })();
     }
-  }, [movie]);
+  }, [movieId]);
 
   return (
     <div
@@ -85,77 +105,110 @@ const QuickTicket = () => {
         {width === "lg" || width === "xl" || width === "2xl" ? (
           <div>
             <p className="font-bold text-lg m-0 lg:m-1">Mua vé nhanh</p>
-            <div className="flex w-full">
-              <div className="lg:w-4/12 h-full text-left">
-                <Select
-                  className="w-full rounded-md lg:rounded-l-md"
-                  defaultValue={"Phim"}
-                  showSearch
-                  filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
-                  size={"large"}
-                  onSelect={handleSelectMovie}
-                >
-                  <Select.Option disabled value="Phim">
-                    Phim
-                  </Select.Option>
-                  {quickBuyState.movieList.length &&
-                    quickBuyState.movieList.map((movie) => (
-                      <Select.Option key={movie.maPhim} value={movie.maPhim} className="font-bold">
-                        {movie.tenPhim}
-                      </Select.Option>
-                    ))}
-                </Select>
-              </div>
-              <div className="lg:w-4/12 h-full text-left">
-                <Select
-                  className="w-full rounded-md lg:rounded-none"
-                  size={"large"}
-                  defaultValue={"Rạp"}
-                  onSelect={handleSelectBranch}
-                >
-                  <Select.Option disabled value={"Rạp"}>
-                    Rạp
-                  </Select.Option>
-                  {quickBuyState.theaterBrands.length &&
-                    quickBuyState.theaterBrands.map((brand) => {
-                      return brand.cumRapChieu.map((branch) => {
-                        return (
-                          <Select.Option key={branch.maCumRap} value={JSON.stringify(branch)} className="font-bold">
-                            {branch.tenCumRap}
+            <form autoComplete="off" noValidate onSubmit={handleSubmit(onQuickBuy)}>
+              <div className="flex w-full">
+                <div className="lg:w-4/12 h-full text-left">
+                  <Controller
+                    name="movie"
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    defaultValue={"Phim"}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        className="w-full rounded-md lg:rounded-l-md"
+                        showSearch
+                        filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+                        size={"large"}
+                        onSelect={handleSelectMovie}
+                      >
+                        <Select.Option disabled value="Phim">
+                          Phim
+                        </Select.Option>
+                        {quickBuyState.movieList.length &&
+                          quickBuyState.movieList.map((movie) => (
+                            <Select.Option key={movie.maPhim} value={movie.maPhim} className="font-bold">
+                              {movie.tenPhim}
+                            </Select.Option>
+                          ))}
+                      </Select>
+                    )}
+                  />
+                </div>
+                <div className="lg:w-4/12 h-full text-left">
+                  <Controller
+                    name="branch"
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    defaultValue={"Rạp"}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        className="w-full rounded-md lg:rounded-none"
+                        size={"large"}
+                        onSelect={handleSelectBranch}
+                        notFoundContent={<Select.Option>Không tìm thấy rạp</Select.Option>}
+                      >
+                        <Select.Option disabled value={"Rạp"}>
+                          Rạp
+                        </Select.Option>
+                        {quickBuyState.theaterBrands?.map((brand) => {
+                          return brand.cumRapChieu.map((branch) => {
+                            return (
+                              <Select.Option key={branch.maCumRap} value={JSON.stringify(branch)} className="font-bold">
+                                {branch.tenCumRap}
+                              </Select.Option>
+                            );
+                          });
+                        })}
+                      </Select>
+                    )}
+                  />
+                </div>
+                <div className="lg:w-3/12 h-full text-left">
+                  <Controller
+                    name="showtime"
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    defaultValue={"Lịch chiếu"}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        className="w-full rounded-md lg:rounded-r-md"
+                        size={"large"}
+                        onSelect={handleSelectShowtime}
+                        notFoundContent={<Select.Option>Không tìm thấy lịch chiếu</Select.Option>}
+                      >
+                        <Select.Option disabled value={"Lịch chiếu"}>
+                          Lịch chiếu
+                        </Select.Option>
+                        {currentBranch.lichChieuPhim?.map((showtime) => (
+                          <Select.Option key={showtime.maLichChieu} value={showtime.maLichChieu} className="font-bold">
+                            {moment(showtime.ngayChieuGioChieu).format("DD/MM/YYYY - HH:ss")}
                           </Select.Option>
-                        );
-                      });
-                    })}
-                </Select>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </div>
+                <div className="lg:w-1/12 max-h-full text-left">
+                  <Button
+                    size="small"
+                    className="bg-orange-500 w-full lg:py-5 flex items-center text-white rounded-md font-bold border-orange-600 hover:border-orange-700 hover:bg-orange-700"
+                    type="submit"
+                    htmlType="submit"
+                  >
+                    Mua vé
+                  </Button>
+                </div>
               </div>
-              <div className="lg:w-3/12 h-full text-left">
-                <Select
-                  className="w-full rounded-md lg:rounded-r-md"
-                  size={"large"}
-                  defaultValue={"Lịch chiếu"}
-                  onSelect={handleSelectShowtime}
-                >
-                  <Select.Option disabled value={"Lịch chiếu"}>
-                    Lịch chiếu
-                  </Select.Option>
-                  {currentBranch?.lichChieuPhim?.length &&
-                    currentBranch.lichChieuPhim?.map((showtime) => (
-                      <Select.Option key={showtime.maLichChieu} value={showtime.maLichChieu} className="font-bold">
-                        {moment(showtime.ngayChieuGioChieu).format("DD/MM/YYYY - HH:ss")}
-                      </Select.Option>
-                    ))}
-                </Select>
-              </div>
-              <div className="lg:w-1/12 max-h-full text-left">
-                <Button
-                  size="small"
-                  className="bg-orange-500 w-full lg:py-5 flex items-center text-white rounded-md font-bold border-orange-600 hover:border-orange-700 hover:bg-orange-700"
-                  onClick={() => showtime && navigate(`/purchase/${showtime}`)}
-                >
-                  Mua vé
-                </Button>
-              </div>
-            </div>
+            </form>
           </div>
         ) : (
           <div>
