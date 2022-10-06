@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from "react";
 import PageLoading from "components/Loading/PageLoading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCouch } from "@fortawesome/free-solid-svg-icons";
+import { faCouch, faUser, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate, useParams, useLocation, useNavigate } from "react-router-dom";
 import SeatItem from "./SeatItem";
 import { currencyVNDFormat } from "utils/currencyFormat";
 import { Popconfirm } from "antd";
 
-import { resetTicketsReducer, ticketsByShowtime, bookSelectedTickets } from "redux/slices/ticketsSlice";
+import {
+  resetTicketsReducer,
+  ticketsByShowtime,
+  bookSelectedTickets,
+  loadOtherSelectedSeats,
+} from "redux/slices/ticketsSlice";
 import { Button, notification } from "antd";
 import PopupModal from "components/Modal/PopupModal";
 import useModalHook from "utils/useModalHook";
+import { connection } from "index";
 
 const Purchase = () => {
   const dispatch = useDispatch();
@@ -21,7 +27,10 @@ const Purchase = () => {
   const { showtimeId } = useParams();
 
   const { visible, showModal, closeModal } = useModalHook();
+
   const [confirmVisible, setConfirmVisible] = useState(false);
+
+  const [firstLoad, setFirstLoad] = useState(true);
 
   const { ticketsData, selectedSeats, isPageLoading, isConfirmLoading, bookedSuccess, error } = useSelector((state) => {
     return state.tickets;
@@ -34,15 +43,44 @@ const Purchase = () => {
   }, 0);
 
   const handleSubmit = () => {
-    // if (!Object.keys(currentUser).length) {
-    //   showModal();
-    // } else {
-    dispatch(bookSelectedTickets(showtimeId));
-    // }
+    if (!Object.keys(currentUser).length) {
+      showModal();
+    } else {
+      dispatch(bookSelectedTickets(showtimeId));
+    }
+  };
+
+  const clearOtherSelectedSeats = () => {
+    connection.invoke("huyDat", currentUser.taiKhoan, Number(showtimeId));
   };
 
   useEffect(() => {
+    window.addEventListener("beforeunload", clearOtherSelectedSeats);
+
     dispatch(ticketsByShowtime(showtimeId));
+
+    connection.on("datVeThanhCong", () => {
+      dispatch(ticketsByShowtime(showtimeId));
+    });
+
+    connection.invoke("loadDanhSachGhe", Number(showtimeId));
+
+    connection.on("loadDanhSachGheDaDat", (dsGheDangDatReturn) => {
+      // GET ANOTHER USER CHOSEN SEATS
+      let otherSelected = dsGheDangDatReturn.filter((item) => item.taiKhoan !== currentUser.taiKhoan);
+
+      let otherSelectedSeatsArr = otherSelected.reduce((result, item, index) => {
+        return [...result, ...JSON.parse(item.danhSachGhe)];
+      }, []);
+
+      // DISPATCH OTHER SELECTED SEATS TO REDUX
+      dispatch(loadOtherSelectedSeats(otherSelectedSeatsArr));
+    });
+    return () => {
+      clearOtherSelectedSeats();
+      window.removeEventListener("beforeunload", clearOtherSelectedSeats);
+      dispatch(resetTicketsReducer());
+    };
   }, []);
 
   useEffect(() => {
@@ -56,37 +94,46 @@ const Purchase = () => {
           },
         });
       }, 1000);
-
-      return () => {
-        notification.destroy();
-      };
     }
-  }, [bookedSuccess]);
 
-  if (isPageLoading) {
+    if (Object.keys(ticketsData).length) {
+      if (firstLoad) {
+        setFirstLoad(false);
+      }
+    }
+
+    return () => {
+      notification.destroy();
+    };
+  }, [bookedSuccess, ticketsData]);
+
+  if (firstLoad && isPageLoading) {
     return <PageLoading />;
   }
+
   return (
     <div className="lg:container mx-auto my-2 w-full">
       <div className="flex flex-col lg:flex-row w-full">
         <div className="w-full lg:w-4/5 lg:mx-2 max-w-full">
           <div className="text-center bg-slate-300 text-black shadow-2xl mb-5 p-2">SCREEN</div>
-          <p className="m-1 text-gray-100">16 ghế trên 1 hàng</p>
-          <div className="overflow-x-scroll mx-2 sm:overflow-hidden">
-            <div className="grid grid-cols-16 gap-1 lg:gap-2" style={{ minWidth: "640px" }}>
-              {(ticketsData.danhSachGhe ?? []).map((seat) => {
+          <div className="flex gap-3 justify-between">
+            <p className="m-1 text-gray-100">16 ghế trên 1 hàng</p>
+          </div>
+          <div className="overflow-x-scroll mx-2 lg:overflow-hidden">
+            <div className="grid grid-cols-16 gap-3 p-2" style={{ minWidth: "800px" }}>
+              {ticketsData.danhSachGhe?.map((seat) => {
                 return <SeatItem key={seat.maGhe} seat={seat} />;
               })}
             </div>
           </div>
-          <div className="flex justify-around bg-slate-500 rounded-md mt-5 shadow-lg w-full max-w-full">
+          <div className="grid grid-cols-3 md:flex md:flex-row justify-around bg-slate-500 rounded-md mt-5 shadow-lg w-full max-w-full">
             <div className="text-center text-gray-100">
               <FontAwesomeIcon
                 size="xs"
                 icon={faCouch}
                 className="bg-red-600 px-5 py-2 border text-black border-black my-2 rounded-md"
               />
-              <p>Đã đặt</p>
+              <p>Đã có khách đặt</p>
             </div>
             <div className="text-center text-gray-100">
               <FontAwesomeIcon
@@ -110,7 +157,15 @@ const Purchase = () => {
                 icon={faCouch}
                 className="bg-green-600 px-5 py-2 border text-black border-black my-2 rounded-md"
               />
-              <p>Đang chọn</p>
+              <p>Bạn đang chọn</p>
+            </div>
+            <div className="text-center text-gray-100">
+              <FontAwesomeIcon
+                size="xs"
+                icon={faUser}
+                className="bg-blue-600 px-5 py-2 border text-black border-black my-2 rounded-md"
+              />
+              <p>Khách đang chọn</p>
             </div>
           </div>
         </div>
@@ -121,7 +176,7 @@ const Purchase = () => {
               {total && currencyVNDFormat.format(total)}
               <span className="mx-2 text-xl">VND</span>
             </p>
-            <div className="flex flex-row lg:flex-col justify-start text-left">
+            <div className="flex flex-col sm:flex-row lg:flex-col justify-start text-left">
               <img src={ticketsData.thongTinPhim?.hinhAnh} alt="" className="h-72 md:w-full mr-5" />
 
               <div>

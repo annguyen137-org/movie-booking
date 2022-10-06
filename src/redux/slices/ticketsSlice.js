@@ -1,10 +1,11 @@
 import ticketsAPI from "services/ticketsAPI";
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
+import { connection } from "index";
 
 const initialState = {
   selectedSeats: [],
   isConfirmLoading: false,
-  // bookedTickets: [],
+  realtimeTickets: [],
   bookedSuccess: "",
   ticketsData: {},
   isPageLoading: false,
@@ -20,15 +21,47 @@ export const ticketsByShowtime = createAsyncThunk("tickets/ticketsByShowtime", a
   }
 });
 
-export const bookSelectedTickets = createAsyncThunk("ticket/bookSelectedTickets", async (showtimeId, { dispatch, getState }) => {
-  try {
-    const { selectedSeats } = getState().tickets;
-    let filter = selectedSeats.map(({ tenGhe, giaVe, maGhe, isSelected }) => {
-      return { maGhe, giaVe };
-    });
-    const data = await ticketsAPI.sendBookedTickets({ maLichChieu: showtimeId, danhSachVe: [...filter] });
+export const bookSelectedTickets = createAsyncThunk(
+  "ticket/bookSelectedTickets",
+  async (showtimeId, { dispatch, getState }) => {
+    try {
+      const {
+        currentUser: { taiKhoan },
+      } = getState().auth;
 
-    return data;
+      const {
+        selectedSeats,
+        ticketsData: {
+          thongTinPhim: { maLichChieu },
+        },
+      } = getState().tickets;
+      let filter = selectedSeats.map(({ tenGhe, giaVe, maGhe, isSelected }) => {
+        return { maGhe, giaVe };
+      });
+      const data = await ticketsAPI.sendBookedTickets({ maLichChieu: showtimeId, danhSachVe: [...filter] });
+
+      connection.invoke("datGheThanhCong", taiKhoan, Number(maLichChieu));
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const getRealtimeTickets = createAsyncThunk("tickets/getRealtimeTickets", async (_, { getState }) => {
+  try {
+    const {
+      currentUser: { taiKhoan },
+    } = getState().auth;
+    const {
+      selectedSeats,
+      ticketsData: {
+        thongTinPhim: { maLichChieu },
+      },
+    } = getState().tickets;
+
+    await connection.invoke("datGhe", taiKhoan, JSON.stringify(selectedSeats), Number(maLichChieu));
   } catch (error) {
     throw error;
   }
@@ -54,16 +87,17 @@ const ticketsSlice = createSlice({
         };
       }
     },
+    loadOtherSelectedSeats: (state, action) => {
+      return { ...state, realtimeTickets: action.payload };
+    },
     resetTicketsReducer: (state) => {
-      return {
-        ...state,
-        selectedSeats: [],
-        isConfirmLoading: false,
-        bookedSuccess: "",
-        ticketsData: {},
-        isPageLoading: false,
-        error: "",
-      };
+      state.selectedSeats = [];
+      state.isConfirmLoading = false;
+      state.realtimeTickets = [];
+      state.bookedSuccess = "";
+      state.ticketsData = {};
+      state.isPageLoading = false;
+      state.error = "";
     },
   },
   extraReducers: (builder) => {
@@ -89,6 +123,6 @@ const ticketsSlice = createSlice({
   },
 });
 
-export const { selectSeat, resetTicketsReducer } = ticketsSlice.actions;
+export const { selectSeat, resetTicketsReducer, loadOtherSelectedSeats } = ticketsSlice.actions;
 
 export default ticketsSlice.reducer;
